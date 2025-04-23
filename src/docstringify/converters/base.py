@@ -130,7 +130,7 @@ class DocstringConverter(ABC):
         parameters : tuple[Parameter, ...]
             Tuple of :class:`.Parameter` instances, which each provide information on
             individual function parameters, including their names, types, and default
-            values (if they have one).
+            values (if present).
 
         Returns
         -------
