@@ -105,8 +105,8 @@ class DocstringConverter(ABC):
     @abstractmethod
     def format_parameter(self, parameter: Parameter) -> str:
         """
-        An abstract method defining how to convert a :class:`.Parameter` into an entry
-        in the parameters section of the docstring.
+        An abstract method defining how to convert a :class:`.Parameter` instance into
+        an entry in the parameters section of the docstring.
 
         Parameters
         ----------

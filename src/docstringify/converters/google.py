@@ -64,8 +64,8 @@ class GoogleDocstringConverter(DocstringConverter):
 
     def format_parameter(self, parameter: Parameter) -> str:
         """
-        Convert a :class:`.Parameter` into an entry in the parameters section of the
-        docstring.
+        Convert a :class:`.Parameter` instance into an entry in the parameters section
+        of the docstring.
 
         Parameters
         ----------
