@@ -95,6 +95,25 @@ lint.isort.known-first-party = [
   "docstringify",
 ]
 
+[tool.pytest.ini_options]
+addopts = [
+  "-ra",
+  "-l",
+  "-v",
+  "--tb=short",
+  "--import-mode=importlib",
+  "--strict-markers",
+  "--strict-config",
+  "--cov=docstringify",
+  "--cov=tests",
+  "--no-cov-on-fail",
+  "--cov-report=term-missing",
+]
+xfail_strict = true
+testpaths = [
+  "tests",
+]
+
 [tool.numpydoc_validation]
 checks = [
   "all",  # report on all checks
