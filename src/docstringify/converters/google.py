@@ -20,7 +20,7 @@ class GoogleDocstringConverter(DocstringConverter):
     Parameters
     ----------
     quote : bool
-        Whether to include the triple quotes in the generated docstrings.
+        Whether to surround the generated docstrings in triple quotes.
     """
 
     def __init__(self, quote: bool) -> None:

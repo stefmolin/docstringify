@@ -28,7 +28,7 @@ class DocstringConverter(ABC):
         Template string for the returns section, e.g., ``Returns:\n{returns}``.
         Note that ``{returns}`` must be present.
     quote : bool
-        Whether to include the triple quotes in the generated docstrings.
+        Whether to surround the generated docstrings in triple quotes.
     """
 
     def __init__(
