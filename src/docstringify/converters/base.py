@@ -135,7 +135,7 @@ class DocstringConverter(ABC):
         Returns
         -------
         str
-            The parameters section part of the docstring.
+            The parameters section of the docstring.
         """
         if parameters:
             return self._parameters_section_template.format(
