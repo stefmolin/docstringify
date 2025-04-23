@@ -94,3 +94,17 @@ lint.extend-per-file-ignores."tests/*" = [ "ANN" ] # don't require annotations f
 lint.isort.known-first-party = [
   "docstringify",
 ]
+
+[tool.numpydoc_validation]
+checks = [
+  "all",  # report on all checks
+  "ES01", # but don't require an extended summary
+  "EX01", # or examples
+  "SA01", # or a see also section
+  "SS06", # and don't require the summary to fit on one line
+]
+exclude = [ # don't report on checks for these
+  '\.__init__$',
+  '\.__repr__$',
+  '\.__str__$',
+]
