@@ -23,3 +23,11 @@ repos:
     hooks:
       - id: pyproject-fmt
         args: [--keep-full-version, --no-print-diff]
+
+  - repo: local
+    hooks:
+      - id: docstringify
+        name: docstringify
+        entry: docstringify --make-changes numpydoc
+        language: python
+        types: [python]
