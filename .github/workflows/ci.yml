@@ -65,3 +65,6 @@ jobs:
 
       - name: Validate pre-commit hook
         run: pre-commit try-repo . docstringify
+
+      - name: Run tests
+        run: pytest
