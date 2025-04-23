@@ -1,3 +1,5 @@
+"""CLI for Docstringify."""
+
 from __future__ import annotations
 
 import argparse
@@ -5,26 +7,35 @@ import sys
 from functools import partial
 from typing import Sequence
 
+from . import __doc__ as pkg_description
 from . import __version__
 from .converters import GoogleDocstringConverter, NumpydocDocstringConverter
 from .traversal import DocstringTransformer, DocstringVisitor
 
 PROG = __package__
-
-STYLES = {
-    'google': GoogleDocstringConverter,
-    'numpydoc': NumpydocDocstringConverter,
-}
+STYLES = {'google': GoogleDocstringConverter, 'numpydoc': NumpydocDocstringConverter}
 CLI_DEFAULTS = {'threshold': 1.0}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog=PROG)
-    parser.add_argument(
-        'filenames',
-        nargs='*',
-        help='Filenames to process',
-    )
+    """
+    Flag missing docstrings and, optionally, generate them from signatures and
+    type annotations.
+
+    Parameters
+    ----------
+    argv : Sequence[str] | None, default=None
+        The arguments passed on the command line.
+
+    Returns
+    -------
+    int
+        Exit code for the process, where non-zero values indicate errors, and ``1``
+        indicates that more than the allowed percentage of docstrings were missing.
+    """
+
+    parser = argparse.ArgumentParser(prog=PROG, description=pkg_description)
+    parser.add_argument('filenames', nargs='*', help='Filenames to process')
     parser.add_argument(
         '--version', action='version', version=f'%(prog)s {__version__}'
     )
@@ -57,7 +68,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    if style := args.make_changes or args.make_changes_inplace or args.suggest_changes:
+    if style := (
+        args.make_changes or args.make_changes_inplace or args.suggest_changes
+    ):
         converter = STYLES[style]
     else:
         converter = None
@@ -79,9 +92,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         missing_docstrings += len(processor.missing_docstrings)
         docstrings_processed += processor.docstrings_inspected
 
-    if docstrings_processed and (
-        missing_percentage := (missing_docstrings / docstrings_processed)
-    ) > (1 - args.threshold):
+    if (
+        docstrings_processed
+        and (missing_percentage := (missing_docstrings / docstrings_processed))
+        > 1 - args.threshold
+    ):
         print(f'Missing {missing_percentage:.0%} of docstrings', file=sys.stderr)
         print(
             f'Your settings require {args.threshold:.0%} of docstrings to be present',
