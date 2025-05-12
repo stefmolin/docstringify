@@ -1,4 +1,7 @@
-"""Traverse the AST with the ability to transform it to add missing docstrings."""
+"""
+Traverse the AST with the ability to transform it to add templates for docstrings based
+on the source code.
+"""
 
 from __future__ import annotations
 
@@ -23,7 +26,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
     filename : str
         The file to process.
     converter : type[DocstringConverter]
-        The converter class determines the docstrings style to use for generating the
+        The converter class determines the docstring style to use for generating the
         suggested docstring templates.
     overwrite : bool, keyword-only, default=False
         Whether to save the modified source code back to the original file.
@@ -45,7 +48,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
         """Whether to save the modified source code back to the original file."""
 
     def save(self) -> None:
-        """Save the modified AST to a file."""
+        """Save the modified AST to a file as source code."""
         if self.missing_docstrings:
             output = (
                 self.source_file

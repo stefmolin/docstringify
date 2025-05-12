@@ -72,7 +72,16 @@ class DocstringVisitor(ast.NodeVisitor):
         """Whether to run in verbose mode."""
 
     def report_missing_docstrings(self) -> None:
-        """Report missing docstrings."""
+        """
+        Report missing docstrings.
+
+        See Also
+        --------
+        :meth:`.handle_missing_docstring`
+            This method is called for each missing docstring, and it defines any actions
+            that should be taken upon nodes with missing docstrings, such as, suggesting
+            a docstring template based on the source code.
+        """
         if self.missing_docstrings:
             for docstring_node in self.missing_docstrings:
                 print(
