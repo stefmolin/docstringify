@@ -12,7 +12,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/stefmolin/docstringify
-    rev: 0.5.1
+    rev: 0.6.0
     hooks:
       - id: docstringify
         args: [--make-changes-inplace=numpydoc]
