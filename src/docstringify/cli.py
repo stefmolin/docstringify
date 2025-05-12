@@ -5,12 +5,15 @@ from __future__ import annotations
 import argparse
 import sys
 from functools import partial
-from typing import Sequence
+from typing import TYPE_CHECKING
 
 from . import __doc__ as pkg_description
 from . import __version__
 from .converters import GoogleDocstringConverter, NumpydocDocstringConverter
 from .traversal import DocstringTransformer, DocstringVisitor
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 PROG = __package__
 STYLES = {'google': GoogleDocstringConverter, 'numpydoc': NumpydocDocstringConverter}
@@ -36,6 +39,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     parser = argparse.ArgumentParser(prog=PROG, description=pkg_description)
     parser.add_argument('filenames', nargs='*', help='Filenames to process')
+    parser.add_argument(
+        '-v', '--verbose', action='store_true', help='Run in verbose mode'
+    )
     parser.add_argument(
         '--version', action='version', version=f'%(prog)s {__version__}'
     )
@@ -79,10 +85,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         partial(
             DocstringTransformer,
             converter=converter,
-            **{'overwrite': bool(args.make_changes_inplace)},
+            overwrite=bool(args.make_changes_inplace),
+            verbose=args.verbose,
         )
         if args.make_changes or args.make_changes_inplace
-        else partial(DocstringVisitor, converter=converter)
+        else partial(DocstringVisitor, converter=converter, verbose=args.verbose)
     )
 
     docstrings_processed = missing_docstrings = 0
