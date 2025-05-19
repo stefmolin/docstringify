@@ -43,7 +43,7 @@ class DocstringNode:
         docstring = ast.get_docstring(node)
         self.docstring = docstring if docstring is None else docstring.strip()
 
-        self.get_source_segment: Callable[[ast.AST], str] = partial(
+        self.get_source_segment: Callable[[ast.AST], str | None] = partial(
             ast.get_source_segment, source_code
         )
 

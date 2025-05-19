@@ -8,11 +8,11 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from ..exceptions import InvalidDocstringError
+from ..nodes.function import FunctionDocstringNode
 
 if TYPE_CHECKING:
     from ..components import Parameter
     from ..nodes.base import DocstringNode
-    from ..nodes.function import FunctionDocstringNode
 
 
 class DocstringConverter(ABC):
@@ -238,7 +238,7 @@ class DocstringConverter(ABC):
         str | None
             The suggested docstring.
         """
-        if isinstance(docstring_node.ast_node, ast.AsyncFunctionDef | ast.FunctionDef):
+        if isinstance(docstring_node, FunctionDocstringNode):
             return (
                 self.to_function_docstring(docstring_node, indent=indent)
                 if docstring_node.docstring_required
