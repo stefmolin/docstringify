@@ -81,7 +81,7 @@ class GoogleDocstringConverter(DocstringConverter):
         category = f'{f", {parameter.category}" if parameter.category else ""}'
         return (
             f'    {parameter.name} ({parameter.type_}{category}): {DESCRIPTION_PLACEHOLDER}'
-            f'{f" Defaults to {parameter.default}." if parameter.default != NO_DEFAULT else ""}'
+            f'{f" Defaults to {parameter.default}." if parameter.default is not NO_DEFAULT else ""}'
         )
 
     def format_return(self, return_type: str | None) -> str:

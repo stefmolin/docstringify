@@ -8,7 +8,7 @@ from __future__ import annotations
 import ast
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, overload
 
 from ..nodes.base import DocstringNode
 from ..nodes.function import FunctionDocstringNode
@@ -132,6 +132,34 @@ class DocstringVisitor(ast.NodeVisitor):
 
         self.docstrings_inspected += 1
         return docstring_node
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.Module,
+        docstring_class: type[DocstringNode],
+    ) -> ast.Module: ...
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.ClassDef,
+        docstring_class: type[DocstringNode],
+    ) -> ast.ClassDef: ...
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.FunctionDef,
+        docstring_class: type[FunctionDocstringNode],
+    ) -> ast.FunctionDef: ...
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.AsyncFunctionDef,
+        docstring_class: type[FunctionDocstringNode],
+    ) -> ast.AsyncFunctionDef: ...
 
     def visit_docstring(
         self,
