@@ -60,9 +60,57 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                     + ''.join(self.source_file.suffixes)
                 )
             )
-            edited_code = ast.unparse(self.tree)
+            edited_code = self._convert_to_source_code()
             output.write_text(edited_code)
             print(f'Docstring templates written to {output}')
+
+    def _convert_to_source_code(self) -> str:
+        source_code = self.source_code.splitlines()
+        output_lines = []
+        write_line = 0
+
+        for missing_docstring in self.missing_docstrings:
+            # write everything before docstring
+            if isinstance(missing_docstring.ast_node, ast.Module):
+                prefix = start_line = 0
+                suffix = ''
+            else:
+                docstring_node = missing_docstring.ast_node.body[0]
+                prefix = docstring_node.col_offset + 4
+                suffix = ''
+
+                start_line = missing_docstring.ast_node.body[1].lineno - 1
+                if isinstance(missing_docstring.ast_node, ast.ClassDef):
+                    start_line -= 1
+
+                if len(body := missing_docstring.ast_node.body) == 2:
+                    code_node = body[1]
+                    line_number = code_node.lineno - 1
+                    line = source_code[line_number]
+
+                    if line.strip() != (function_body := line[code_node.col_offset :]):
+                        # if the function body is on the same line as the signature, cut it out
+                        # in order to inject the docstring in the right spot
+                        source_code[line_number] = source_code[line_number][
+                            : code_node.col_offset
+                        ].rstrip()
+
+                        # add the logic under the docstring
+                        start_line = missing_docstring.ast_node.body[1].lineno
+                        suffix = function_body
+
+            output_lines += source_code[write_line:start_line]
+
+            # write docstring
+            output_lines += [
+                f'{" " * prefix}"""{missing_docstring.raw_docstring}"""'
+                + (f'\n{" " * prefix}{suffix}' if suffix else '')
+            ]
+            write_line = start_line
+
+        output_lines += source_code[write_line:]
+
+        return '\n'.join(output_lines) + '\n'
 
     def handle_missing_docstring(self, docstring_node: DocstringNode) -> DocstringNode:
         """
