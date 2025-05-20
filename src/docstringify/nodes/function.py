@@ -23,11 +23,12 @@ class FunctionDocstringNode(DocstringNode):
         parent: DocstringNode,
     ) -> None:
         super().__init__(node, module_name, source_code, parent)
+
         self.decorators: list[str] = [
             self.get_source_segment(decorator) for decorator in node.decorator_list
         ]
 
-        self.is_method: bool = self.parent and isinstance(
+        self.is_method: bool = self.parent is not None and isinstance(
             self.parent.ast_node, ast.ClassDef
         )
         self.is_abstract_method: bool = self.is_method and (
