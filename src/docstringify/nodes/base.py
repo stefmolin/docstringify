@@ -40,12 +40,14 @@ class DocstringNode:
         ) = node
         self.name: str = getattr(node, 'name', self.module_name)
 
-        docstring = ast.get_docstring(node)
-        self.docstring = docstring if docstring is None else docstring.strip()
-
         self.get_source_segment: Callable[[ast.AST], str | None] = partial(
             ast.get_source_segment, source_code
         )
+
+    @property
+    def docstring(self) -> str | None:
+        docstring = ast.get_docstring(self.ast_node)
+        return docstring if docstring is None else docstring.strip()
 
     @property
     def fully_qualified_name(self) -> str:
