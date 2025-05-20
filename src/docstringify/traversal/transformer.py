@@ -112,7 +112,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
 
         return '\n'.join(output_lines) + '\n'
 
-    def handle_missing_docstring(self, docstring_node: DocstringNode) -> DocstringNode:
+    def handle_missing_docstring(self, docstring_node: DocstringNode) -> None:
         """
         Handle missing docstrings by injecting a suggested docstring template based on
         the source code into the AST.
@@ -122,13 +122,6 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
         docstring_node : DocstringNode
             An instance of :class:`.DocstringNode`, which wraps an AST node and adds
             additional context relevant for Docstringify.
-
-        Returns
-        -------
-        DocstringNode
-            An instance of :class:`.DocstringNode`, which wraps an AST node and adds
-            additional context relevant for Docstringify. The AST node it contains will
-            have a new node for the docstring template added to its body.
         """
         suggested_docstring = self.docstring_converter.suggest_docstring(
             docstring_node,
@@ -146,8 +139,6 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             docstring_node.ast_node.body.insert(0, docstring_ast_node)
 
         docstring_node.ast_node = ast.fix_missing_locations(docstring_node.ast_node)
-
-        return docstring_node
 
     def process_file(self) -> None:
         """

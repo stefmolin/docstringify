@@ -39,7 +39,9 @@ class FunctionDocstringNode(DocstringNode):
             self.is_method and 'staticmethod' in self.decorators
         )
         self.is_instance_method: bool = (
-            self.is_method and not self.is_class_method and not self.is_static_method
+            self.is_method
+            and (not self.is_class_method)
+            and (not self.is_static_method)
         )
 
         # don't require docstring for the __init__ method if the class has a docstring
