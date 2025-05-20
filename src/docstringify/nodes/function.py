@@ -25,9 +25,14 @@ class FunctionDocstringNode(DocstringNode):
         super().__init__(node, module_name, source_code, parent)
 
         self.decorators: list[str] = [
-            self.get_source_segment(decorator) for decorator in node.decorator_list
+            decorator
+            for decorator_node in node.decorator_list
+            if (decorator := self.get_source_segment(decorator_node))
         ]
 
+        self.is_overload: bool = (
+            'overload' in self.decorators or 'typing.overload' in self.decorators
+        )
         self.is_method: bool = self.parent is not None and isinstance(
             self.parent.ast_node, ast.ClassDef
         )
@@ -46,8 +51,15 @@ class FunctionDocstringNode(DocstringNode):
         )
 
         # don't require docstring for the __init__ method if the class has a docstring
-        self.docstring_required: bool = not (
-            self.is_method and self.name == '__init__' and self.parent.docstring
+        # or if the function/method is just a typing.overload signature
+        self.docstring_required: bool = (
+            not (
+                self.is_method
+                and self.name == '__init__'
+                and self.parent is not None
+                and self.parent.docstring
+            )
+            and not self.is_overload
         )
 
         self.arguments: ast.arguments | None = getattr(node, 'args', None)
