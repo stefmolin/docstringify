@@ -73,7 +73,7 @@ By default, all docstrings are required. If you want to be more lenient, you can
       args: [--threshold=0.75]
 ```
 
-If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google` and `numpydoc`). Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
+If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
