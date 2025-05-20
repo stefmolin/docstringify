@@ -167,7 +167,19 @@ test.say_hello is missing a docstring
 Docstring templates written to /.../test_docstringify.py
 ```
 
-If you want to overwrite the file with the edits, pass `overwrite=True` to `DocstringTransformer()`.
+If you want to overwrite the file with the edits, pass `overwrite=True` to `DocstringTransformer()`:
+
+```pycon
+>>> from docstringify.converters import GoogleDocstringConverter
+>>> from docstringify.traversal import DocstringTransformer
+>>> transformer = DocstringTransformer(
+...     'test.py', converter=GoogleDocstringConverter, overwrite=True
+... )
+>>> transformer.process_file()
+test is missing a docstring
+test.say_hello is missing a docstring
+Docstring templates written to /.../test.py
+```
 
 ## Contributing
 
