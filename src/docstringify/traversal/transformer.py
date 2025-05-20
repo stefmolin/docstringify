@@ -9,6 +9,7 @@ import ast
 from textwrap import indent
 from typing import TYPE_CHECKING
 
+from ..exceptions import EmptyDocstringError
 from .visitor import DocstringVisitor
 
 if TYPE_CHECKING:
@@ -113,7 +114,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
 
             # write docstring
             if not (docstring := missing_docstring.docstring):
-                raise ValueError('Docstring is empty')
+                raise EmptyDocstringError
 
             output_lines.append(
                 indent(
