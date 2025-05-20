@@ -6,6 +6,7 @@ on the source code.
 from __future__ import annotations
 
 import ast
+from textwrap import indent
 from typing import TYPE_CHECKING
 
 from .visitor import DocstringVisitor
@@ -65,6 +66,15 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             print(f'Docstring templates written to {output}')
 
     def _convert_to_source_code(self) -> str:
+        """
+        Convert the modified AST back to source code, preserving the original format and
+        any comments.
+
+        Returns
+        -------
+        str
+            The original source code with the docstrings injected.
+        """
         source_code = self.source_code.splitlines()
         output_lines = []
         write_line = 0
@@ -102,10 +112,21 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             output_lines += source_code[write_line:start_line]
 
             # write docstring
-            output_lines += [
-                f'{" " * prefix}"""{missing_docstring.raw_docstring}"""'
-                + (f'\n{" " * prefix}{suffix}' if suffix else '')
-            ]
+            if not (docstring := missing_docstring.docstring):
+                raise ValueError('Docstring is empty')
+
+            output_lines.append(
+                indent(
+                    self.docstring_converter.format_docstring(
+                        docstring.splitlines(),
+                        indent=0,
+                        quote=True,
+                    )
+                    + (f'\n{suffix}' if suffix else ''),
+                    ' ' * prefix,
+                )
+            )
+
             write_line = start_line
 
         output_lines += source_code[write_line:]
