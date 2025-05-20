@@ -12,20 +12,20 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/stefmolin/docstringify
-    rev: 0.6.0
+    rev: 0.7.0
     hooks:
       - id: docstringify
         args: [--make-changes-inplace=numpydoc]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.9
+    rev: v0.11.10
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix, --show-fixes]
       - id: ruff-format
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.5.1
+    rev: v2.6.0
     hooks:
       - id: pyproject-fmt
         args: [--keep-full-version, --no-print-diff]
