@@ -44,7 +44,6 @@ class FunctionDocstringNode(DocstringNode):
         )
 
         # don't require docstring for the __init__ method if the class has a docstring
-        # or if the function/method is just a typing.overload signature
         self.docstring_required: bool = (
             not (
                 self.is_method
