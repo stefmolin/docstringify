@@ -44,11 +44,18 @@ class FunctionDocstringNode(DocstringNode):
         )
 
         # don't require docstring for the __init__ method if the class has a docstring
-        self.docstring_required: bool = not (
-            self.is_method and self.name == '__init__' and self.parent.docstring
+        self.docstring_required: bool = (
+            not (
+                self.is_method
+                and self.name == '__init__'
+                and self.parent is not None
+                and self.parent.docstring
+            )
         )
 
-        self.arguments: ast.arguments | None = getattr(node, 'args', None)
+        self.arguments: ast.arguments = node.args
+
+        self.returns: ast.AST | None = node.returns
         self.return_annotation: str | None = self._extract_return_annotation()
         self.return_statements: list[ast.Return] = []
 
@@ -96,8 +103,9 @@ class FunctionDocstringNode(DocstringNode):
 
     def _extract_positional_args(self) -> list[Parameter]:
         if (default_count := len(positional_defaults := self.arguments.defaults)) < (
-            positional_arguments_count := len(self.arguments.posonlyargs)
-            + len(self.arguments.args)
+            positional_arguments_count := (
+                len(self.arguments.posonlyargs) + len(self.arguments.args)
+            )
         ):
             positional_defaults = [NO_DEFAULT] * (
                 positional_arguments_count - default_count
@@ -156,23 +164,28 @@ class FunctionDocstringNode(DocstringNode):
         return params
 
     def _extract_return_annotation(self) -> str | None:
-        if return_annotation_node := self.ast_node.returns:
-            if isinstance(return_annotation_node, ast.Constant):
-                return return_annotation_node.value
-            if isinstance(return_annotation_node, ast.Name):
-                return return_annotation_node.id
-            return self.get_source_segment(return_annotation_node)
-        return None
+        if self.returns is None:
+            return self.returns
+
+        if isinstance(self.returns, ast.Constant):
+            return self.returns.value
+
+        if isinstance(self.returns, ast.Name):
+            return self.returns.id
+
+        return self.get_source_segment(self.returns)
 
     def extract_returns(self) -> str | None:
         if self.return_annotation:
             return self.return_annotation
+
         if any(
-            not isinstance(return_value := return_node.value, ast.Constant)
+            not isinstance((return_value := return_node.value), ast.Constant)
             or return_value.value
             for return_node in self.return_statements
         ):
             return RETURN_TYPE_PLACEHOLDER
+
         return None
 
     def to_function(self) -> Function:
