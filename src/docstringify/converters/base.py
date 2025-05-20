@@ -197,9 +197,9 @@ class DocstringConverter(ABC):
             The docstring as a string or list of strings that form lines in the docstring.
         indent : int
             The number of spaces by which to indent the docstring.
-        quote : bool, optional
-            Whether to quote the docstring, passing this overrides the ``quote`` setting
-            specified upon initialization.
+        quote : bool | None, default=None
+            Whether to surround the docstring in triple quotes, passing this overrides
+            the ``quote`` setting specified upon initialization.
 
         Returns
         -------
