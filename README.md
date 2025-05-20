@@ -58,7 +58,7 @@ Add the following to your `.pre-commit-config.yaml` file to block commits with m
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 0.7.0
   hooks:
     - id: docstringify
 ```
@@ -67,17 +67,17 @@ By default, all docstrings are required. If you want to be more lenient, you can
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 0.7.0
   hooks:
     - id: docstringify
       args: [--threshold=0.75]
 ```
 
-If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google` and `numpydoc`). Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
+If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 0.7.0
   hooks:
     - id: docstringify
       args: [--suggest-changes=numpydoc]
@@ -87,7 +87,7 @@ Use `--make-changes` to create a copy of each file with docstring templates. Her
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 0.7.0
   hooks:
     - id: docstringify
       args: [--make-changes=google]
