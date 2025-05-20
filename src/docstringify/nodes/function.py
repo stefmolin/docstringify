@@ -64,7 +64,8 @@ class FunctionDocstringNode(DocstringNode):
 
             return (
                 f'"{default_value}"'
-                if isinstance(default_value, str) and not default_value.startswith('`')
+                if isinstance(default_value, str)
+                and (not default_value.startswith('`'))
                 else default_value
             )
         return NO_DEFAULT
@@ -95,8 +96,9 @@ class FunctionDocstringNode(DocstringNode):
 
     def _extract_positional_args(self) -> list[Parameter]:
         if (default_count := len(positional_defaults := self.arguments.defaults)) < (
-            positional_arguments_count := len(self.arguments.posonlyargs)
-            + len(self.arguments.args)
+            positional_arguments_count := (
+                len(self.arguments.posonlyargs) + len(self.arguments.args)
+            )
         ):
             positional_defaults = [NO_DEFAULT] * (
                 positional_arguments_count - default_count
@@ -167,7 +169,7 @@ class FunctionDocstringNode(DocstringNode):
         if self.return_annotation:
             return self.return_annotation
         if any(
-            not isinstance(return_value := return_node.value, ast.Constant)
+            not isinstance((return_value := return_node.value), ast.Constant)
             or return_value.value
             for return_node in self.return_statements
         ):

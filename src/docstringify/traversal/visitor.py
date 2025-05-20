@@ -112,8 +112,8 @@ class DocstringVisitor(ast.NodeVisitor):
 
     def process_docstring(self, docstring_node: DocstringNode) -> DocstringNode:
         """
-        Process a docstring node, appending it to :attr:`.missing_docstrings` if a docstring
-        is required, but there isn't one.
+        Process a docstring node, appending it to :attr:`.missing_docstrings` if a
+        docstring is required, but there isn't one.
 
         Parameters
         ----------
@@ -181,12 +181,12 @@ class DocstringVisitor(ast.NodeVisitor):
         ast.AsyncFunctionDef | ast.ClassDef | ast.FunctionDef | ast.Module
             The AST node that was visited.
         """
-        docstring_node = docstring_class(
-            node,
-            self.module_name,
-            self.source_code,
-            parent=self.stack[-1] if self.stack else None,
-        )
+        if isinstance(node, ast.Module):
+            docstring_node = docstring_class(node, self.module_name, self.source_code)
+        else:
+            docstring_node = docstring_class(
+                node, self.module_name, self.source_code, parent=self.stack[-1]
+            )
 
         self.stack.append(docstring_node)
 
