@@ -87,9 +87,11 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
 
             # write everything before docstring
             if not isinstance(missing_docstring.ast_node, ast.Module):
+                # line before a code node
                 start_line = missing_docstring.ast_node.body[1].lineno - 1
+
                 if isinstance(missing_docstring.ast_node, ast.ClassDef):
-                    start_line -= 1
+                    start_line = docstring_node.lineno
 
                 if len(body := missing_docstring.ast_node.body) == 2:
                     code_node = body[1]
