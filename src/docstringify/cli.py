@@ -9,7 +9,11 @@ from typing import TYPE_CHECKING
 
 from . import __doc__ as pkg_description
 from . import __version__
-from .converters import GoogleDocstringConverter, NumpydocDocstringConverter
+from .converters import (
+    GoogleDocstringConverter,
+    NumpydocDocstringConverter,
+    StubDocstringConverter,
+)
 from .traversal import DocstringTransformer, DocstringVisitor
 
 if TYPE_CHECKING:
@@ -17,9 +21,15 @@ if TYPE_CHECKING:
 
 
 PROG = __package__
-STYLES: dict[str, type[GoogleDocstringConverter] | type[NumpydocDocstringConverter]] = {
+STYLES: dict[
+    str,
+    type[GoogleDocstringConverter]
+    | type[NumpydocDocstringConverter]
+    | type[StubDocstringConverter],
+] = {
     'google': GoogleDocstringConverter,
     'numpydoc': NumpydocDocstringConverter,
+    'stub': StubDocstringConverter,
 }
 CLI_DEFAULTS = {'threshold': 1.0}
 
