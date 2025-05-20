@@ -78,18 +78,15 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
         """
         source_code = self.source_code.splitlines()
         output_lines = []
-        write_line = 0
+        write_line = start_line = 0
 
         for missing_docstring in self.missing_docstrings:
-            # write everything before docstring
-            if isinstance(missing_docstring.ast_node, ast.Module):
-                prefix = start_line = 0
-                suffix = ''
-            else:
-                docstring_node = missing_docstring.ast_node.body[0]
-                prefix = docstring_node.col_offset + 4
-                suffix = ''
+            docstring_node = missing_docstring.ast_node.body[0]
+            prefix = docstring_node.col_offset
+            suffix = ''
 
+            # write everything before docstring
+            if not isinstance(missing_docstring.ast_node, ast.Module):
                 start_line = missing_docstring.ast_node.body[1].lineno - 1
                 if isinstance(missing_docstring.ast_node, ast.ClassDef):
                     start_line -= 1
@@ -128,8 +125,10 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                 )
             )
 
+            # update current location in file
             write_line = start_line
 
+        # write the rest of the file
         output_lines += source_code[write_line:]
 
         return '\n'.join(output_lines) + '\n'
@@ -145,11 +144,15 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             An instance of :class:`.DocstringNode`, which wraps an AST node and adds
             additional context relevant for Docstringify.
         """
+        indent = (
+            0
+            if isinstance(docstring_node.ast_node, ast.Module)
+            else docstring_node.ast_node.col_offset + 4
+        )
+
         suggested_docstring = self.docstring_converter.suggest_docstring(
             docstring_node,
-            indent=0
-            if isinstance(docstring_node.ast_node, ast.Module)
-            else docstring_node.ast_node.col_offset + 4,
+            indent=indent,
         )
         docstring_ast_node = ast.Expr(ast.Constant(suggested_docstring))
 
@@ -161,6 +164,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             docstring_node.ast_node.body.insert(0, docstring_ast_node)
 
         docstring_node.ast_node = ast.fix_missing_locations(docstring_node.ast_node)
+        docstring_ast_node.col_offset = indent
 
     def process_file(self) -> None:
         """
