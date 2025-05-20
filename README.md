@@ -54,7 +54,7 @@ You can use Docstringify in three modes:
 
 ### Pre-commit hook
 
-Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings:
+Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings before any formatters like `ruff`:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
