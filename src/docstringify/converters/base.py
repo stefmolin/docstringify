@@ -218,11 +218,7 @@ class DocstringConverter(ABC):
             if len(docstring) > 1:
                 prefix = ' ' * indent if indent else ''
                 sep = '\n'
-            docstring = [
-                quote_char,
-                *docstring,
-                quote_char if quote_char else f'{prefix}',
-            ]
+            docstring = [quote_char, *docstring, quote_char or f'{prefix}']
         else:
             raise InvalidDocstringError(type(docstring).__name__)
 
