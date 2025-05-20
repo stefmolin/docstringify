@@ -6,8 +6,10 @@ on the source code.
 from __future__ import annotations
 
 import ast
+from textwrap import indent
 from typing import TYPE_CHECKING
 
+from ..exceptions import EmptyDocstringError
 from .visitor import DocstringVisitor
 
 if TYPE_CHECKING:
@@ -60,11 +62,80 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                     + ''.join(self.source_file.suffixes)
                 )
             )
-            edited_code = ast.unparse(self.tree)
+            edited_code = self._convert_to_source_code()
             output.write_text(edited_code)
             print(f'Docstring templates written to {output}')
 
-    def handle_missing_docstring(self, docstring_node: DocstringNode) -> DocstringNode:
+    def _convert_to_source_code(self) -> str:
+        """
+        Convert the modified AST back to source code, preserving the original format and
+        any comments.
+
+        Returns
+        -------
+        str
+            The original source code with the docstrings injected.
+        """
+        source_code = self.source_code.splitlines()
+        output_lines = []
+        write_line = start_line = 0
+
+        for missing_docstring in self.missing_docstrings:
+            docstring_node = missing_docstring.ast_node.body[0]
+            prefix = docstring_node.col_offset
+            suffix = ''
+
+            # write everything before docstring
+            if not isinstance(missing_docstring.ast_node, ast.Module):
+                # line before a code node
+                start_line = missing_docstring.ast_node.body[1].lineno - 1
+
+                if isinstance(missing_docstring.ast_node, ast.ClassDef):
+                    start_line = docstring_node.lineno
+
+                if len(body := missing_docstring.ast_node.body) == 2:
+                    code_node = body[1]
+                    line_number = code_node.lineno - 1
+                    line = source_code[line_number]
+
+                    if line.strip() != (function_body := line[code_node.col_offset :]):
+                        # if the function body is on the same line as the signature, cut it out
+                        # in order to inject the docstring in the right spot
+                        source_code[line_number] = source_code[line_number][
+                            : code_node.col_offset
+                        ].rstrip()
+
+                        # add the logic under the docstring
+                        start_line = missing_docstring.ast_node.body[1].lineno
+                        suffix = function_body
+
+            output_lines += source_code[write_line:start_line]
+
+            # write docstring
+            if not (docstring := missing_docstring.docstring):
+                raise EmptyDocstringError
+
+            output_lines.append(
+                indent(
+                    self.docstring_converter.format_docstring(
+                        docstring.splitlines(),
+                        indent=0,
+                        quote=True,
+                    )
+                    + (f'\n{suffix}' if suffix else ''),
+                    ' ' * prefix,
+                )
+            )
+
+            # update current location in file
+            write_line = start_line
+
+        # write the rest of the file
+        output_lines += source_code[write_line:]
+
+        return '\n'.join(output_lines) + '\n'
+
+    def handle_missing_docstring(self, docstring_node: DocstringNode) -> None:
         """
         Handle missing docstrings by injecting a suggested docstring template based on
         the source code into the AST.
@@ -74,19 +145,16 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
         docstring_node : DocstringNode
             An instance of :class:`.DocstringNode`, which wraps an AST node and adds
             additional context relevant for Docstringify.
-
-        Returns
-        -------
-        DocstringNode
-            An instance of :class:`.DocstringNode`, which wraps an AST node and adds
-            additional context relevant for Docstringify. The AST node it contains will
-            have a new node for the docstring template added to its body.
         """
+        indent = (
+            0
+            if isinstance(docstring_node.ast_node, ast.Module)
+            else docstring_node.ast_node.col_offset + 4
+        )
+
         suggested_docstring = self.docstring_converter.suggest_docstring(
             docstring_node,
-            indent=0
-            if isinstance(docstring_node.ast_node, ast.Module)
-            else docstring_node.ast_node.col_offset + 4,
+            indent=indent,
         )
         docstring_ast_node = ast.Expr(ast.Constant(suggested_docstring))
 
@@ -98,8 +166,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             docstring_node.ast_node.body.insert(0, docstring_ast_node)
 
         docstring_node.ast_node = ast.fix_missing_locations(docstring_node.ast_node)
-
-        return docstring_node
+        docstring_ast_node.col_offset = indent
 
     def process_file(self) -> None:
         """

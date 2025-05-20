@@ -25,9 +25,14 @@ class FunctionDocstringNode(DocstringNode):
         super().__init__(node, module_name, source_code, parent)
 
         self.decorators: list[str] = [
-            self.get_source_segment(decorator) for decorator in node.decorator_list
+            decorator
+            for decorator_node in node.decorator_list
+            if (decorator := self.get_source_segment(decorator_node))
         ]
 
+        self.is_overload: bool = (
+            'overload' in self.decorators or 'typing.overload' in self.decorators
+        )
         self.is_method: bool = self.parent is not None and isinstance(
             self.parent.ast_node, ast.ClassDef
         )
@@ -40,10 +45,13 @@ class FunctionDocstringNode(DocstringNode):
             self.is_method and 'staticmethod' in self.decorators
         )
         self.is_instance_method: bool = (
-            self.is_method and not self.is_class_method and not self.is_static_method
+            self.is_method
+            and (not self.is_class_method)
+            and (not self.is_static_method)
         )
 
         # don't require docstring for the __init__ method if the class has a docstring
+        # or if the function/method is just a typing.overload signature
         self.docstring_required: bool = (
             not (
                 self.is_method
@@ -51,6 +59,7 @@ class FunctionDocstringNode(DocstringNode):
                 and self.parent is not None
                 and self.parent.docstring
             )
+            and not self.is_overload
         )
 
         self.arguments: ast.arguments = node.args
@@ -72,7 +81,8 @@ class FunctionDocstringNode(DocstringNode):
 
             return (
                 f'"{default_value}"'
-                if isinstance(default_value, str) and not default_value.startswith('`')
+                if isinstance(default_value, str)
+                and (not default_value.startswith('`'))
                 else default_value
             )
         return NO_DEFAULT

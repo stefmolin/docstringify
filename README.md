@@ -54,7 +54,7 @@ You can use Docstringify in three modes:
 
 ### Pre-commit hook
 
-Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings:
+Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings before any formatters like `ruff`:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
@@ -167,7 +167,19 @@ test.say_hello is missing a docstring
 Docstring templates written to /.../test_docstringify.py
 ```
 
-If you want to overwrite the file with the edits, pass `overwrite=True` to `DocstringTransformer()`.
+If you want to overwrite the file with the edits, pass `overwrite=True` to `DocstringTransformer()`:
+
+```pycon
+>>> from docstringify.converters import GoogleDocstringConverter
+>>> from docstringify.traversal import DocstringTransformer
+>>> transformer = DocstringTransformer(
+...     'test.py', converter=GoogleDocstringConverter, overwrite=True
+... )
+>>> transformer.process_file()
+test is missing a docstring
+test.say_hello is missing a docstring
+Docstring templates written to /.../test.py
+```
 
 ## Contributing
 
