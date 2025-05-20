@@ -184,7 +184,9 @@ class DocstringConverter(ABC):
             return self._returns_section_template.format(returns=return_text)
         return ''
 
-    def format_docstring(self, docstring: str | list[str], indent: int) -> str:
+    def format_docstring(
+        self, docstring: str | list[str], indent: int, quote: bool | None = None
+    ) -> str:
         """
         Format the docstring with the requested level of indentation and surrounding
         triple quotes, if requested.
@@ -195,23 +197,32 @@ class DocstringConverter(ABC):
             The docstring as a string or list of strings that form lines in the docstring.
         indent : int
             The number of spaces by which to indent the docstring.
+        quote : bool, optional
+            Whether to quote the docstring, passing this overrides the ``quote`` setting
+            specified upon initialization.
 
         Returns
         -------
         str
             The docstring indented to ``indent`` spaces will be returned either as a
-            quoted docstring if the converter was initialized with ``quote=True``, or an
-            unquoted docstring otherwise.
+            quoted docstring if the converter was initialized with ``quote=True`` or
+            ``quote=True`` was passed when calling this method, or an unquoted
+            docstring otherwise.
         """
-        quote = '"""' if self._quote else ''
+        quote_char = '"""' if quote or self._quote else ''
         prefix = sep = ''
+
         if isinstance(docstring, str):
-            docstring = [quote, docstring, quote]
+            docstring = [quote_char, docstring, quote_char]
         elif isinstance(docstring, list):
             if len(docstring) > 1:
                 prefix = ' ' * indent if indent else ''
                 sep = '\n'
-            docstring = [quote, *docstring, f'{prefix}{quote}']
+            docstring = [
+                quote_char,
+                *docstring,
+                quote_char if quote_char else f'{prefix}',
+            ]
         else:
             raise InvalidDocstringError(type(docstring).__name__)
 
