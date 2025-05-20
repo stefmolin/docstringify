@@ -69,7 +69,17 @@ class FunctionDocstringNode(DocstringNode):
             )
         return NO_DEFAULT
 
-    def _extract_star_args(self) -> list[Parameter | None, Parameter | None]:
+    def _extract_star_args(self) -> list[Parameter | None]:
+        """
+        Extract the function's ``*args`` and ``**kwargs`` arguments.
+
+        Returns
+        -------
+        list[Parameter | None]
+            A list of the form ``[*args, **kwargs]``, where each entry is either a
+            :class:`.Parameter` instance, or ``None`` if that type of argument isn't
+            part of the function definition.
+        """
         return [
             Parameter(
                 name=f'*{arg.arg}' if arg_type == 'vararg' else f'**{arg.arg}',
@@ -83,7 +93,7 @@ class FunctionDocstringNode(DocstringNode):
             for arg in [getattr(self.arguments, arg_type)]
         ]
 
-    def _extract_positional_args(self) -> list[Parameter, ...]:
+    def _extract_positional_args(self) -> list[Parameter]:
         if (default_count := len(positional_defaults := self.arguments.defaults)) < (
             positional_arguments_count := len(self.arguments.posonlyargs)
             + len(self.arguments.args)
@@ -110,7 +120,7 @@ class FunctionDocstringNode(DocstringNode):
             )
         ]
 
-    def _extract_keyword_args(self) -> list[Parameter, ...]:
+    def _extract_keyword_args(self) -> list[Parameter]:
         return [
             Parameter(
                 name=arg.arg,
