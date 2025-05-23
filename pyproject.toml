@@ -37,16 +37,19 @@ dynamic = [
 ]
 
 dependencies = [  ]
-optional-dependencies.dev = [
-  "pre-commit",
-  "pytest",
-  "pytest-cov",
-  "pytest-randomly",
-]
 urls.Documentation = "https://github.com/stefmolin/docstringify"
 urls.Homepage = "https://github.com/stefmolin/docstringify"
 urls.Source = "https://github.com/stefmolin/docstringify"
 scripts.docstringify = "docstringify.cli:main"
+
+[dependency-groups]
+dev = [ "pre-commit", { include-group = "test" } ]
+
+test = [
+  "pytest>=8.3.4",
+  "pytest-cov>=4.1.0",
+  "pytest-randomly>=3.12.0",
+]
 
 [tool.setuptools.packages.find]
 where = [
