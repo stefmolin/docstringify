@@ -1,3 +1,5 @@
+"""__description__"""
+
 from __future__ import annotations
 
 import ast
@@ -15,6 +17,8 @@ from .base import DocstringNode
 
 
 class FunctionDocstringNode(DocstringNode):
+    """__description__"""
+
     def __init__(
         self,
         node: ast.FunctionDef | ast.AsyncFunctionDef,
@@ -22,6 +26,20 @@ class FunctionDocstringNode(DocstringNode):
         source_code: str,
         parent: DocstringNode,
     ) -> None:
+        """
+        __description__
+
+        Parameters
+        ----------
+        node : __type__
+            __description__
+        module_name : str
+            __description__
+        source_code : str
+            __description__
+        parent : DocstringNode
+            __description__
+        """
         super().__init__(node, module_name, source_code, parent)
 
         self.decorators: list[str] = [
@@ -71,6 +89,21 @@ class FunctionDocstringNode(DocstringNode):
     def _extract_default_values(
         self, default: ast.Constant | None | Literal[NO_DEFAULT], is_keyword_only: bool
     ) -> str | Literal[NO_DEFAULT]:
+        """
+        __description__
+
+        Parameters
+        ----------
+        default : __type__
+            __description__
+        is_keyword_only : bool
+            __description__
+
+        Returns
+        -------
+        str | Literal[NO_DEFAULT]
+            __description__
+        """
         if (not is_keyword_only and default is not NO_DEFAULT) or (
             is_keyword_only and default
         ):
@@ -112,6 +145,14 @@ class FunctionDocstringNode(DocstringNode):
         ]
 
     def _extract_positional_args(self) -> list[Parameter]:
+        """
+        __description__
+
+        Returns
+        -------
+        list[Parameter]
+            __description__
+        """
         if (default_count := len(positional_defaults := self.arguments.defaults)) < (
             positional_arguments_count := (
                 len(self.arguments.posonlyargs) + len(self.arguments.args)
@@ -140,6 +181,14 @@ class FunctionDocstringNode(DocstringNode):
         ]
 
     def _extract_keyword_args(self) -> list[Parameter]:
+        """
+        __description__
+
+        Returns
+        -------
+        list[Parameter]
+            __description__
+        """
         return [
             Parameter(
                 name=arg.arg,
@@ -153,6 +202,14 @@ class FunctionDocstringNode(DocstringNode):
         ]
 
     def extract_arguments(self) -> tuple[Parameter, ...]:
+        """
+        __description__
+
+        Returns
+        -------
+        tuple[Parameter, ...]
+            __description__
+        """
         params = self._extract_positional_args()
 
         varargs, kwargs = self._extract_star_args()
@@ -174,6 +231,14 @@ class FunctionDocstringNode(DocstringNode):
         return params
 
     def _extract_return_annotation(self) -> str | None:
+        """
+        __description__
+
+        Returns
+        -------
+        str | None
+            __description__
+        """
         if self.returns is None:
             return self.returns
 
@@ -186,6 +251,14 @@ class FunctionDocstringNode(DocstringNode):
         return self.get_source_segment(self.returns)
 
     def extract_returns(self) -> str | None:
+        """
+        __description__
+
+        Returns
+        -------
+        str | None
+            __description__
+        """
         if self.return_annotation:
             return self.return_annotation
 
@@ -199,4 +272,12 @@ class FunctionDocstringNode(DocstringNode):
         return None
 
     def to_function(self) -> Function:
+        """
+        __description__
+
+        Returns
+        -------
+        Function
+            __description__
+        """
         return Function(self.extract_arguments(), self.extract_returns())

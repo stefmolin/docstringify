@@ -1,3 +1,5 @@
+"""__description__"""
+
 from __future__ import annotations
 
 import ast
@@ -6,6 +8,8 @@ from typing import Callable, overload
 
 
 class DocstringNode:
+    """__description__"""
+
     @overload
     def __init__(
         self,
@@ -31,6 +35,20 @@ class DocstringNode:
         source_code: str,
         parent: DocstringNode | None = None,
     ) -> None:
+        """
+        __description__
+
+        Parameters
+        ----------
+        node : __type__
+            __description__
+        module_name : str
+            __description__
+        source_code : str
+            __description__
+        parent : __type__, default=None
+            __description__
+        """
         self.module_name: str = module_name
         self.parent: DocstringNode | None = parent
         self.docstring_required: bool = True
@@ -46,11 +64,27 @@ class DocstringNode:
 
     @property
     def docstring(self) -> str | None:
+        """
+        __description__
+
+        Returns
+        -------
+        str | None
+            __description__
+        """
         docstring = ast.get_docstring(self.ast_node)
         return docstring if docstring is None else docstring.strip()
 
     @property
     def fully_qualified_name(self) -> str:
+        """
+        __description__
+
+        Returns
+        -------
+        str
+            __description__
+        """
         return (
             f'{self.parent.fully_qualified_name}.{self.name}'
             if self.parent

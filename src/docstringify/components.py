@@ -11,6 +11,8 @@ RETURN_TYPE_PLACEHOLDER = '__return_type__'
 
 
 class Parameter(NamedTuple):
+    """__description__"""
+
     name: str
     type_: str
     category: str | None
@@ -18,5 +20,7 @@ class Parameter(NamedTuple):
 
 
 class Function(NamedTuple):
+    """__description__"""
+
     parameters: tuple[Parameter, ...]
     return_type: str | None
