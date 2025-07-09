@@ -33,7 +33,7 @@ class DocstringNode:
     ) -> None:
         self.module_name: str = module_name
         self.parent: DocstringNode | None = parent
-        self.docstring_required: bool = True
+        self._docstring_required: bool = True
 
         self.ast_node: (
             ast.Module | ast.ClassDef | ast.FunctionDef | ast.AsyncFunctionDef
@@ -55,4 +55,27 @@ class DocstringNode:
             f'{self.parent.fully_qualified_name}.{self.name}'
             if self.parent
             else self.name
+        )
+
+    @property
+    def docstring_required(self) -> bool:
+        if self._has_decorator('overload'):
+            return False
+        return self._docstring_required
+
+    @docstring_required.setter
+    def docstring_required(self, value: bool) -> None:
+        self._docstring_required = value
+
+    def _has_decorator(self, decorator_name: str) -> bool:
+        if not hasattr(self.ast_node, 'decorator_list'):
+            return False
+
+        return any(
+            (isinstance(decorator, ast.Name) and decorator.id == decorator_name)
+            or (
+                isinstance(decorator, ast.Attribute)
+                and decorator.attr == decorator_name
+            )
+            for decorator in self.ast_node.decorator_list
         )
