@@ -1,13 +1,11 @@
 [build-system]
-build-backend = "setuptools.build_meta"
+build-backend = "hatchling.build"
 
-requires = [
-  "setuptools",
-  "setuptools-scm",
-]
+requires = [ "hatchling" ]
 
 [project]
 name = "docstringify"
+version = "1.0.0"
 description = "Flag missing docstrings and, optionally, generate them from signatures and type annotations."
 readme = "README.md"
 keywords = [
@@ -17,7 +15,8 @@ keywords = [
   "numpydoc-style docstring",
   "pre-commit",
 ]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = [ "LICENSE" ]
 authors = [
   { name = "Stefanie Molin", email = "docstringify@stefaniemolin.com" },
 ]
@@ -31,9 +30,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-]
-dynamic = [
-  "version",
 ]
 
 dependencies = [  ]
@@ -50,14 +46,6 @@ test = [
   "pytest-cov>=4.1.0",
   "pytest-randomly>=3.12.0",
 ]
-
-[tool.setuptools.packages.find]
-where = [
-  "src",
-]
-
-[tool.setuptools.dynamic]
-version = { attr = "docstringify.__version__" }
 
 [tool.ruff]
 line-length = 88

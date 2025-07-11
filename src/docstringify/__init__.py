@@ -3,4 +3,6 @@ Flag missing docstrings and, optionally, generate them from signatures and
 type annotations.
 """
 
-__version__ = '1.0.0'
+import importlib.metadata
+
+__version__ = importlib.metadata.version(__name__)
