@@ -288,14 +288,14 @@ class FunctionDocstringNode(DocstringNode):
 
     def extract_returns(self) -> str | None:
         """
-        Extract the function's return information for use in the docstring.
+        Extract the function's return type for use in the docstring.
 
         Returns
         -------
         str | None
-            The return annotation as a string, if present. Otherwise, the function
-            will be checked for ``return`` calls, and, if present, a placeholder for
-            the type will be returned; if it isn't present, ``None``, will be returned.
+            The return type as a string, if present. Otherwise, the function will
+            be checked for ``return`` calls, and, if present, a placeholder for the
+            type will be returned; if it isn't present, ``None``, will be returned.
         """
         if self.return_annotation:
             return self.return_annotation
