@@ -5,7 +5,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "docstringify"
-version = "1.0.0"
+version = "1.1.0"
 description = "Flag missing docstrings and, optionally, generate them from signatures and type annotations."
 readme = "README.md"
 keywords = [
