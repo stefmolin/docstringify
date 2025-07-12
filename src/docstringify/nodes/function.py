@@ -1,3 +1,5 @@
+"""Docstringify traversal node for functions."""
+
 from __future__ import annotations
 
 import ast
@@ -15,6 +17,21 @@ from .base import DocstringNode
 
 
 class FunctionDocstringNode(DocstringNode):
+    """
+    Class for Docstringify function traversal nodes.
+
+    Parameters
+    ----------
+    node : ast.FunctionDef | ast.AsyncFunctionDef
+        AST node representing a function.
+    module_name : str
+        The name of the module to which the node belongs.
+    source_code : str
+        The source code for the module from where ``node`` originates.
+    parent : DocstringNode
+        The parent node.
+    """
+
     def __init__(
         self,
         node: ast.FunctionDef | ast.AsyncFunctionDef,
@@ -29,26 +46,45 @@ class FunctionDocstringNode(DocstringNode):
             for decorator_node in node.decorator_list
             if (decorator := self.get_source_segment(decorator_node))
         ]
+        """List of decorators applied to this function."""
 
         self.is_overload: bool = (
             'overload' in self.decorators or 'typing.overload' in self.decorators
         )
+        """Whether this function definition is actually just a typing overload
+        definition, and, therefore, doesn't need a docstring."""
+
         self.is_method: bool = self.parent is not None and isinstance(
             self.parent.ast_node, ast.ClassDef
         )
+        """Whether this function is actually a method, meaning that its parent node
+        is a class."""
+
         self.is_abstract_method: bool = self.is_method and (
             'abstractmethod' in self.decorators
             or 'abc.abstractmethod' in self.decorators
         )
+        """Whether this function is an abstract method, meaning it is a method
+        (:attr:`.is_method`) and has an ``abstractmethod`` decorator."""
+
         self.is_class_method: bool = self.is_method and 'classmethod' in self.decorators
+        """Whether this function is a class method, meaning it is a method
+        (:attr:`.is_method`) and has an ``classmethod`` decorator."""
+
         self.is_static_method: bool = (
             self.is_method and 'staticmethod' in self.decorators
         )
+        """Whether this function is a static method, meaning it is a method
+        (:attr:`.is_method`) and has an ``staticmethod`` decorator."""
+
         self.is_instance_method: bool = (
             self.is_method
             and (not self.is_class_method)
             and (not self.is_static_method)
         )
+        """Whether this function is an instance method, meaning it is a method
+        (:attr:`.is_method`), but it is not a class method (:attr:`.is_class_method`)
+        or static method (:attr:`.is_static_method`)."""
 
         # don't require docstring for the __init__ method if the class has a docstring
         # or if the function/method is just a typing.overload signature
@@ -61,16 +97,46 @@ class FunctionDocstringNode(DocstringNode):
             )
             and not self.is_overload
         )
+        """Whether this node should have a docstring. Docstrings are currently required
+        for all functions unless they are a typing overload. Note that ``__init__()``
+        methods don't require a docstring if the parent has a docstring."""
 
         self.arguments: ast.arguments = node.args
+        """The function arguments in their AST representation."""
 
         self.returns: ast.AST | None = node.returns
+        """The function's return annotation, as an AST node, if there is a return
+        annotation, otherwise ``None``."""
+
         self.return_annotation: str | None = self._extract_return_annotation()
+        """The function's return annotation, as a string, if there is a return
+        annotation, otherwise ``None``."""
+
         self.return_statements: list[ast.Return] = []
+        """All ``return`` calls in the function itself (not any inner functions, for
+        example), represented as AST nodes. Note that this will be populated by the
+        traversal logic when those nodes are visited."""
 
     def _extract_default_values(
         self, default: ast.Constant | None | Literal[NO_DEFAULT], is_keyword_only: bool
     ) -> str | Literal[NO_DEFAULT]:
+        """
+        Extract the argument's default value.
+
+        Parameters
+        ----------
+        default : ast.Constant | None | Literal[NO_DEFAULT]
+            The representation of the default value for further processing.
+        is_keyword_only : bool
+            Whether the default value being extracted corresponds to a keyword-only
+            argument.
+
+        Returns
+        -------
+        str | Literal[NO_DEFAULT]
+            The default value as a string, if there is one, otherwise,
+            :const:`NO_DEFAULT`.
+        """
         if (not is_keyword_only and default is not NO_DEFAULT) or (
             is_keyword_only and default
         ):
@@ -112,6 +178,15 @@ class FunctionDocstringNode(DocstringNode):
         ]
 
     def _extract_positional_args(self) -> list[Parameter]:
+        """
+        Extract the function's positional arguments.
+
+        Returns
+        -------
+        list[Parameter]
+            A list of :class:`.Parameter` instances, representing the function's
+            positional arguments.
+        """
         if (default_count := len(positional_defaults := self.arguments.defaults)) < (
             positional_arguments_count := (
                 len(self.arguments.posonlyargs) + len(self.arguments.args)
@@ -140,6 +215,15 @@ class FunctionDocstringNode(DocstringNode):
         ]
 
     def _extract_keyword_args(self) -> list[Parameter]:
+        """
+        Extract the function's keyword arguments.
+
+        Returns
+        -------
+        list[Parameter]
+            A list of :class:`.Parameter` instances, representing the function's
+            keyword arguments.
+        """
         return [
             Parameter(
                 name=arg.arg,
@@ -153,6 +237,15 @@ class FunctionDocstringNode(DocstringNode):
         ]
 
     def extract_arguments(self) -> tuple[Parameter, ...]:
+        """
+        Extract the function's arguments.
+
+        Returns
+        -------
+        tuple[Parameter, ...]
+            A tuple of :class:`.Parameter` instances, representing all of the
+            function's arguments.
+        """
         params = self._extract_positional_args()
 
         varargs, kwargs = self._extract_star_args()
@@ -174,6 +267,14 @@ class FunctionDocstringNode(DocstringNode):
         return params
 
     def _extract_return_annotation(self) -> str | None:
+        """
+        Extract the function's return annotation, if present.
+
+        Returns
+        -------
+        str | None
+            The return annotation as a string, if present, otherwise, ``None``.
+        """
         if self.returns is None:
             return self.returns
 
@@ -186,6 +287,16 @@ class FunctionDocstringNode(DocstringNode):
         return self.get_source_segment(self.returns)
 
     def extract_returns(self) -> str | None:
+        """
+        Extract the function's return information for use in the docstring.
+
+        Returns
+        -------
+        str | None
+            The return annotation as a string, if present. Otherwise, the function
+            will be checked for ``return`` calls, and, if present, a placeholder for
+            the type will be returned; if it isn't present, ``None``, will be returned.
+        """
         if self.return_annotation:
             return self.return_annotation
 
@@ -199,4 +310,12 @@ class FunctionDocstringNode(DocstringNode):
         return None
 
     def to_function(self) -> Function:
+        """
+        Convert node into a :class:`.Function` instance.
+
+        Returns
+        -------
+        Function
+            The :class:`.Function` instance.
+        """
         return Function(self.extract_arguments(), self.extract_returns())
