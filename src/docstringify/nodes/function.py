@@ -99,7 +99,7 @@ class FunctionDocstringNode(DocstringNode):
         )
         """Whether this node should have a docstring. Docstrings are currently required
         for all functions unless they are a typing overload. Note that ``__init__()``
-        methods don't require a docstring if the parent has a docstring."""
+        methods don't require a docstring if the parent (the class) has a docstring."""
 
         self.arguments: ast.arguments = node.args
         """The function arguments in their AST representation."""
