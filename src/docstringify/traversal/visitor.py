@@ -8,7 +8,7 @@ from __future__ import annotations
 import ast
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, overload
 
 from ..nodes.base import DocstringNode
 from ..nodes.function import FunctionDocstringNode
@@ -112,8 +112,8 @@ class DocstringVisitor(ast.NodeVisitor):
 
     def process_docstring(self, docstring_node: DocstringNode) -> DocstringNode:
         """
-        Process a docstring node, appending it to :attr:`.missing_docstrings` if a docstring
-        is required, but there isn't one.
+        Process a docstring node, appending it to :attr:`.missing_docstrings` if a
+        docstring is required, but there isn't one.
 
         Parameters
         ----------
@@ -132,6 +132,34 @@ class DocstringVisitor(ast.NodeVisitor):
 
         self.docstrings_inspected += 1
         return docstring_node
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.Module,
+        docstring_class: type[DocstringNode],
+    ) -> ast.Module: ...
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.ClassDef,
+        docstring_class: type[DocstringNode],
+    ) -> ast.ClassDef: ...
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.FunctionDef,
+        docstring_class: type[FunctionDocstringNode],
+    ) -> ast.FunctionDef: ...
+
+    @overload
+    def visit_docstring(
+        self,
+        node: ast.AsyncFunctionDef,
+        docstring_class: type[FunctionDocstringNode],
+    ) -> ast.AsyncFunctionDef: ...
 
     def visit_docstring(
         self,
@@ -153,12 +181,12 @@ class DocstringVisitor(ast.NodeVisitor):
         ast.AsyncFunctionDef | ast.ClassDef | ast.FunctionDef | ast.Module
             The AST node that was visited.
         """
-        docstring_node = docstring_class(
-            node,
-            self.module_name,
-            self.source_code,
-            parent=self.stack[-1] if self.stack else None,
-        )
+        if isinstance(node, ast.Module):
+            docstring_node = docstring_class(node, self.module_name, self.source_code)
+        else:
+            docstring_node = docstring_class(
+                node, self.module_name, self.source_code, parent=self.stack[-1]
+            )
 
         self.stack.append(docstring_node)
 

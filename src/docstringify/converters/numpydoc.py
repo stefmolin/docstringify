@@ -81,7 +81,7 @@ class NumpydocDocstringConverter(DocstringConverter):
         return (
             f'{parameter.name} : {parameter.type_}'
             f'{f", {parameter.category}" if parameter.category else ""}'
-            f'{f", default={parameter.default}" if parameter.default != NO_DEFAULT else ""}'
+            f'{f", default={parameter.default}" if parameter.default is not NO_DEFAULT else ""}'
             f'\n    {DESCRIPTION_PLACEHOLDER}'
         )
 

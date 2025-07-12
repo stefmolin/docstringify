@@ -1,10 +1,10 @@
-"""Google-style docstring converter."""
+"""Stub docstring converter."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..components import DESCRIPTION_PLACEHOLDER, NO_DEFAULT, Parameter
+from ..components import DESCRIPTION_PLACEHOLDER, Parameter
 from .base import DocstringConverter
 
 if TYPE_CHECKING:
@@ -12,10 +12,9 @@ if TYPE_CHECKING:
     from ..nodes.function import FunctionDocstringNode
 
 
-class GoogleDocstringConverter(DocstringConverter):
+class StubDocstringConverter(DocstringConverter):
     """
-    Class defining the DocstringConverter API for `Google-style docstrings
-    <https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html#example-google>`_.
+    Class defining the DocstringConverter API for injecting ``__description__`` stubs only.
 
     Parameters
     ----------
@@ -25,9 +24,7 @@ class GoogleDocstringConverter(DocstringConverter):
 
     def __init__(self, quote: bool) -> None:
         super().__init__(
-            parameters_section_template='Args:\n{parameters}',
-            returns_section_template='Returns:\n    {returns}',
-            quote=quote,
+            parameters_section_template='', returns_section_template='', quote=quote
         )
 
     def to_function_docstring(
@@ -50,17 +47,7 @@ class GoogleDocstringConverter(DocstringConverter):
         str
             The function docstring.
         """
-        function = docstring_node.to_function()
-
-        docstring = [DESCRIPTION_PLACEHOLDER]
-
-        if parameters_section := self.create_parameters_section(function.parameters):
-            docstring.extend(['', parameters_section])
-
-        if returns_section := self.create_returns_section(function.return_type):
-            docstring.extend(['', returns_section])
-
-        return self.format_docstring(docstring, indent=indent)
+        return self.format_docstring(DESCRIPTION_PLACEHOLDER, indent=indent)
 
     def format_parameter(self, parameter: Parameter) -> str:
         """
@@ -76,13 +63,9 @@ class GoogleDocstringConverter(DocstringConverter):
         Returns
         -------
         str
-            An entry for the parameter for use in the parameters section of the docstring.
+            An empty string.
         """
-        category = f'{f", {parameter.category}" if parameter.category else ""}'
-        return (
-            f'    {parameter.name} ({parameter.type_}{category}): {DESCRIPTION_PLACEHOLDER}'
-            f'{f" Defaults to {parameter.default}." if parameter.default is not NO_DEFAULT else ""}'
-        )
+        return ''
 
     def format_return(self, return_type: str | None) -> str:
         """
@@ -97,10 +80,8 @@ class GoogleDocstringConverter(DocstringConverter):
         Returns
         -------
         str
-            The return type entry for use in the returns section of the docstring.
+            An empty string.
         """
-        if return_type:
-            return f'{return_type}: {DESCRIPTION_PLACEHOLDER}'
         return ''
 
     def to_module_docstring(self, docstring_node: DocstringNode) -> str:
