@@ -69,13 +69,13 @@ class FunctionDocstringNode(DocstringNode):
 
         self.is_class_method: bool = self.is_method and 'classmethod' in self.decorators
         """Whether this function is a class method, meaning it is a method
-        (:attr:`.is_method`) and has an ``classmethod`` decorator."""
+        (:attr:`.is_method`) and has a ``classmethod`` decorator."""
 
         self.is_static_method: bool = (
             self.is_method and 'staticmethod' in self.decorators
         )
         """Whether this function is a static method, meaning it is a method
-        (:attr:`.is_method`) and has an ``staticmethod`` decorator."""
+        (:attr:`.is_method`) and has a ``staticmethod`` decorator."""
 
         self.is_instance_method: bool = (
             self.is_method
