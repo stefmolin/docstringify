@@ -18,7 +18,7 @@ class DocstringNode:
     module_name : str
         The name of the module to which the node belongs.
     source_code : str
-        The source code for the module from where ``node`` originates.
+        The source code for the module from which ``node`` originates.
     parent : DocstringNode | None, default=None
         The parent node, if there is one.
     """
