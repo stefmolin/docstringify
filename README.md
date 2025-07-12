@@ -54,11 +54,11 @@ You can use Docstringify in three modes:
 
 ### Pre-commit hook
 
-Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings:
+Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings before any formatters like `ruff`:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 1.0.0
   hooks:
     - id: docstringify
 ```
@@ -67,17 +67,17 @@ By default, all docstrings are required. If you want to be more lenient, you can
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 1.0.0
   hooks:
     - id: docstringify
       args: [--threshold=0.75]
 ```
 
-If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google` and `numpydoc`). Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
+If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for stub suggestions (just single lines of `"""__description__"""`):
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 1.0.0
   hooks:
     - id: docstringify
       args: [--suggest-changes=numpydoc]
@@ -87,13 +87,21 @@ Use `--make-changes` to create a copy of each file with docstring templates. Her
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 0.6.0
+  rev: 1.0.0
   hooks:
     - id: docstringify
       args: [--make-changes=google]
 ```
 
-If you want the changes to be made in place, change `--make-changes` to `--make-changes-inplace` &ndash; make sure you only operate on files that are in version control with this setting. Note that the resulting format of your file may be a little different (spacing, newlines, *etc.*).
+If you want the changes to be made in place, change `--make-changes` to `--make-changes-inplace` &ndash; make sure you only operate on files that are in version control with this setting. Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
+
+```yaml
+- repo: https://github.com/stefmolin/docstringify
+  rev: 1.0.0
+  hooks:
+    - id: docstringify
+      args: [--make-changes-inplace=numpydoc]
+```
 
 Be sure to check out the [pre-commit documentation](https://pre-commit.com/#pre-commit-configyaml---hooks) for additional configuration options.
 
@@ -167,7 +175,19 @@ test.say_hello is missing a docstring
 Docstring templates written to /.../test_docstringify.py
 ```
 
-If you want to overwrite the file with the edits, pass `overwrite=True` to `DocstringTransformer()`.
+If you want to overwrite the file with the edits, pass `overwrite=True` to `DocstringTransformer()`:
+
+```pycon
+>>> from docstringify.converters import GoogleDocstringConverter
+>>> from docstringify.traversal import DocstringTransformer
+>>> transformer = DocstringTransformer(
+...     'test.py', converter=GoogleDocstringConverter, overwrite=True
+... )
+>>> transformer.process_file()
+test is missing a docstring
+test.say_hello is missing a docstring
+Docstring templates written to /.../test.py
+```
 
 ## Contributing
 

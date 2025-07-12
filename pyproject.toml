@@ -1,13 +1,11 @@
 [build-system]
-build-backend = "setuptools.build_meta"
+build-backend = "hatchling.build"
 
-requires = [
-  "setuptools",
-  "setuptools-scm",
-]
+requires = [ "hatchling" ]
 
 [project]
 name = "docstringify"
+version = "1.0.0"
 description = "Flag missing docstrings and, optionally, generate them from signatures and type annotations."
 readme = "README.md"
 keywords = [
@@ -17,13 +15,14 @@ keywords = [
   "numpydoc-style docstring",
   "pre-commit",
 ]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = [ "LICENSE" ]
 authors = [
   { name = "Stefanie Molin", email = "docstringify@stefaniemolin.com" },
 ]
 requires-python = ">=3.9"
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.9",
@@ -32,29 +31,21 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
-dynamic = [
-  "version",
-]
 
 dependencies = [  ]
-optional-dependencies.dev = [
-  "pre-commit",
-  "pytest",
-  "pytest-cov",
-  "pytest-randomly",
-]
 urls.Documentation = "https://github.com/stefmolin/docstringify"
 urls.Homepage = "https://github.com/stefmolin/docstringify"
 urls.Source = "https://github.com/stefmolin/docstringify"
 scripts.docstringify = "docstringify.cli:main"
 
-[tool.setuptools.packages.find]
-where = [
-  "src",
-]
+[dependency-groups]
+dev = [ "pre-commit", { include-group = "test" } ]
 
-[tool.setuptools.dynamic]
-version = { attr = "docstringify.__version__" }
+test = [
+  "pytest>=8.3.4",
+  "pytest-cov>=4.1.0",
+  "pytest-randomly>=3.12.0",
+]
 
 [tool.ruff]
 line-length = 88
@@ -115,6 +106,7 @@ testpaths = [
 [tool.numpydoc_validation]
 checks = [
   "all",  # report on all checks
+  "GL08", # use Docstringify to test for docstring presence instead
   "ES01", # but don't require an extended summary
   "EX01", # or examples
   "SA01", # or a see also section
@@ -125,6 +117,6 @@ exclude = [ # don't report on checks for these
   '\.__repr__$',
   '\.__str__$',
 ]
-override_SS05 = [ # override SS05 to allow docstrings starting with these words
-  '^Process ',
+override_SS05 = [ # allow docstrings to start with these words
+  '^Unambiguous ',
 ]

@@ -9,14 +9,28 @@ from typing import TYPE_CHECKING
 
 from . import __doc__ as pkg_description
 from . import __version__
-from .converters import GoogleDocstringConverter, NumpydocDocstringConverter
+from .converters import (
+    GoogleDocstringConverter,
+    NumpydocDocstringConverter,
+    StubDocstringConverter,
+)
 from .traversal import DocstringTransformer, DocstringVisitor
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+
 PROG = __package__
-STYLES = {'google': GoogleDocstringConverter, 'numpydoc': NumpydocDocstringConverter}
+STYLES: dict[
+    str,
+    type[GoogleDocstringConverter]
+    | type[NumpydocDocstringConverter]
+    | type[StubDocstringConverter],
+] = {
+    'google': GoogleDocstringConverter,
+    'numpydoc': NumpydocDocstringConverter,
+    'stub': StubDocstringConverter,
+}
 CLI_DEFAULTS = {'threshold': 1.0}
 
 
@@ -74,22 +88,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    if style := (
-        args.make_changes or args.make_changes_inplace or args.suggest_changes
-    ):
-        converter = STYLES[style]
-    else:
-        converter = None
-
     get_docstring_processor = (
         partial(
             DocstringTransformer,
-            converter=converter,
+            converter=STYLES[style],
             overwrite=bool(args.make_changes_inplace),
             verbose=args.verbose,
         )
-        if args.make_changes or args.make_changes_inplace
-        else partial(DocstringVisitor, converter=converter, verbose=args.verbose)
+        if (style := args.make_changes or args.make_changes_inplace)
+        else partial(
+            DocstringVisitor,
+            converter=STYLES.get(args.suggest_changes),
+            verbose=args.verbose,
+        )
     )
 
     docstrings_processed = missing_docstrings = 0
