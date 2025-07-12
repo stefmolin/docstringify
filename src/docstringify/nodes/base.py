@@ -68,7 +68,7 @@ class DocstringNode:
         self.get_source_segment: Callable[[ast.AST], str | None] = partial(
             ast.get_source_segment, source_code
         )
-        """Callable to get the source code for the AST node at :attr:`.ast_node`."""
+        """Callable to get the source code for the AST node (:attr:`.ast_node`)."""
 
     @property
     def docstring(self) -> str | None:
