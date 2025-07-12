@@ -117,6 +117,29 @@ class FunctionDocstringNode(DocstringNode):
         example), represented as AST nodes. Note that this will be populated by the
         traversal logic when those nodes are visited."""
 
+    def _extract_parameter_type(self, arg: ast.arg) -> str:
+        """
+        Extract the parameter's type.
+
+        Parameters
+        ----------
+        arg : ast.arg
+            The AST node for the function argument.
+
+        Returns
+        -------
+        str
+            The parameter type for use in the docstring.
+        """
+        if arg.annotation is None:
+            return PARAMETER_TYPE_PLACEHOLDER
+
+        try:
+            # if `arg.annotation` is of type `ast.Name`, we can just get the `id`
+            return arg.annotation.id
+        except AttributeError:
+            return self.get_source_segment(arg.annotation) or PARAMETER_TYPE_PLACEHOLDER
+
     def _extract_default_values(
         self, default: ast.Constant | None | Literal[NO_DEFAULT], is_keyword_only: bool
     ) -> str | Literal[NO_DEFAULT]:
@@ -167,7 +190,7 @@ class FunctionDocstringNode(DocstringNode):
         return [
             Parameter(
                 name=f'*{arg.arg}' if arg_type == 'vararg' else f'**{arg.arg}',
-                type_=getattr(arg.annotation, 'id', PARAMETER_TYPE_PLACEHOLDER),
+                type_=self._extract_parameter_type(arg),
                 category=None,
                 default=NO_DEFAULT,
             )
@@ -199,7 +222,7 @@ class FunctionDocstringNode(DocstringNode):
         return [
             Parameter(
                 name=arg.arg,
-                type_=getattr(arg.annotation, 'id', PARAMETER_TYPE_PLACEHOLDER),
+                type_=self._extract_parameter_type(arg),
                 category=category,
                 default=self._extract_default_values(default, False),
             )
@@ -227,7 +250,7 @@ class FunctionDocstringNode(DocstringNode):
         return [
             Parameter(
                 name=arg.arg,
-                type_=getattr(arg.annotation, 'id', PARAMETER_TYPE_PLACEHOLDER),
+                type_=self._extract_parameter_type(arg),
                 category='keyword-only',
                 default=self._extract_default_values(default, True),
             )
