@@ -135,7 +135,7 @@ class FunctionDocstringNode(DocstringNode):
         -------
         str | Literal[NO_DEFAULT]
             The default value as a string, if there is one, otherwise,
-            :const:`NO_DEFAULT`.
+            :const:`.NO_DEFAULT`.
         """
         if (not is_keyword_only and default is not NO_DEFAULT) or (
             is_keyword_only and default
