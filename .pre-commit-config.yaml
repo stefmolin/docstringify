@@ -18,10 +18,20 @@ repos:
         exclude: (tests|docs)/.*
 
   - repo: https://github.com/stefmolin/docstringify
-    rev: 1.1.0
+    rev: 011f2e24a5b972c7d76e99e301cfefaa8027cc70
     hooks:
-      - id: docstringify
-        args: [--make-changes-inplace=numpydoc]
+      - id: docstringify-edit
+        name: docstringify source code with numpydoc
+        args: [--overwrite, --style=numpydoc]
+        files: src/.*
+
+  - repo: https://github.com/stefmolin/docstringify
+    rev: 011f2e24a5b972c7d76e99e301cfefaa8027cc70
+    hooks:
+      - id: docstringify-edit
+        name: docstringify tests with stubs
+        args: [--overwrite, --style=stub]
+        files: tests/.*
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.3
