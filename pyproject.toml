@@ -82,6 +82,9 @@ lint.isort.known-first-party = [
   "docstringify",
 ]
 
+[tool.codespell]
+ignore-regex = 'https://([\w/\.])+'
+
 [tool.numpydoc_validation]
 checks = [
   "all",  # report on all checks
