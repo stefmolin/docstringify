@@ -73,6 +73,16 @@ class DocstringNode:
         )
         """Callable to get the source code for the AST node (:attr:`.ast_node`)."""
 
+        self.original_docstring_location: tuple[int, int] | None = (
+            None
+            if self.docstring is None
+            else (self.ast_node.body[0].lineno, self.ast_node.body[0].end_lineno)
+        )
+        """Start and end line of the docstring in the original file, if there was one,
+        otherwise, ``None``. This is necessary for the rewriting algorithm to exclude
+        lines containing "empty" docstrings from the file. Empty docstrings are empty
+        strings or strings containing only whitespace characters."""
+
     @property
     def docstring(self) -> str | None:
         """
