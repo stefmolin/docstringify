@@ -125,6 +125,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                     ):
                         start_line -= 1
 
+                # handle edge case of "single line" definitions like `def test(): ...`
                 if len(body := missing_docstring.ast_node.body) == 2:
                     code_node = body[1]
                     line_number = code_node.lineno - 1
