@@ -77,7 +77,8 @@ class DocstringNode:
         )
         """Start and end line of the docstring in the original file, if there was one,
         otherwise, ``None``. This is necessary for the rewriting algorithm to exclude
-        these lines from the file."""
+        lines containing "empty" docstrings from the file. Empty docstrings are empty
+        strings or strings containing only whitespace characters."""
 
     @property
     def docstring(self) -> str | None:
