@@ -112,8 +112,8 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                         strict=False,
                     ):
                         # starting from the end line of the search to the definition
-                        # line, the first line without the required indent, will be
-                        # the start of the body logic
+                        # line, the first, non-empty line without the required indent
+                        # will be the start of the body logic
                         if line and not line.startswith(expected_indent):
                             start_line = line_number
                             break
