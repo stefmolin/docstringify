@@ -11,6 +11,14 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        additional_dependencies:
+          - tomli
+        exclude: (\.(svg|png|pdf)$)|(CODE_OF_CONDUCT.md)
+
   - repo: https://github.com/numpy/numpydoc
     rev: v1.9.0
     hooks:

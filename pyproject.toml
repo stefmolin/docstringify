@@ -5,7 +5,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "docstringify"
-version = "1.0.0"
+version = "1.1.1"
 description = "Flag missing docstrings and, optionally, generate them from signatures and type annotations."
 readme = "README.md"
 keywords = [
@@ -102,6 +102,9 @@ xfail_strict = true
 testpaths = [
   "tests",
 ]
+
+[tool.codespell]
+ignore-regex = 'https://([\w/\.])+'
 
 [tool.numpydoc_validation]
 checks = [
