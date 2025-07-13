@@ -149,6 +149,8 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
 
             if skip_lines:
                 # need to skip over the empty docstring in the original file
+                # note that line numbers are one-based so we have to account for that
+                # in the slicing logic
                 output_lines += (
                     source_code[write_line : skip_lines[0] - 1]
                     + source_code[skip_lines[1] : start_line]
