@@ -110,6 +110,9 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                         itertools.count(start=search_end_line_number, step=-1),
                         node_source_code[::-1],
                     ):
+                        # starting from the end line of the search to the definition
+                        # line, the first line without the required indent, will be
+                        # the start of the body logic
                         if line and not line.startswith(expected_indent):
                             start_line = line_number
                             break
