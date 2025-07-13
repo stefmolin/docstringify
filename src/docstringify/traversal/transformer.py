@@ -119,9 +119,9 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                             break
 
                     if start_line == missing_docstring.ast_node.body[1].lineno:
-                        # the above logic handles multiline class definitions, but if it
-                        # it is a single line and a method is immediately afterward, we
-                        # need to make sure to not overwrite that
+                        # the above logic handles multiline definitions, but if it is
+                        # a single line and code is immediately afterward, we need to
+                        # make sure to not overwrite that
                         start_line = docstring_node.lineno
                     elif (
                         skip_lines is None
