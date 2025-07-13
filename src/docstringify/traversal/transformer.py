@@ -79,6 +79,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
         source_code = self.source_code.splitlines()
         output_lines = []
         write_line = start_line = 0
+        skip_lines = None
 
         for missing_docstring in self.missing_docstrings:
             docstring_node = missing_docstring.ast_node.body[0]
@@ -89,6 +90,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             if not isinstance(missing_docstring.ast_node, ast.Module):
                 # line before a code node
                 start_line = missing_docstring.ast_node.body[1].lineno - 1
+                skip_lines = missing_docstring.original_docstring_location
 
                 if isinstance(missing_docstring.ast_node, ast.ClassDef):
                     start_line = docstring_node.lineno
@@ -109,7 +111,14 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                         start_line = missing_docstring.ast_node.body[1].lineno
                         suffix = function_body
 
-            output_lines += source_code[write_line:start_line]
+            if skip_lines:
+                # need to skip over the empty docstring in the original file
+                output_lines += (
+                    source_code[write_line : skip_lines[0] - 1]
+                    + source_code[skip_lines[1] + 1 : start_line]
+                )
+            else:
+                output_lines += source_code[write_line:start_line]
 
             # write docstring
             if not (docstring := missing_docstring.docstring):
