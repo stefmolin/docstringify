@@ -1,6 +1,6 @@
 - id: docstringify-edit
   name: generate missing docstrings with docstringify
-  description: >
+  description: >-
     Generate missing docstrings from signatures and type annotations,
     injecting them into the source code.
   entry: docstringify edit
@@ -9,7 +9,7 @@
 
 - id: docstringify-suggest
   name: suggest docstrings with docstringify
-  description: >
+  description: >-
     Generate suggestions for missing docstrings from signatures and
     type annotations, printing them for inspection.
   entry: docstringify suggest
@@ -18,7 +18,7 @@
 
 - id: docstringify-check
   name: check for missing docstrings with docstringify
-  description: >
+  description: >-
     Flag missing docstrings, failing if more than the threshold are missing.
   entry: docstringify check
   language: python
@@ -27,7 +27,7 @@
 
 - id: docstringify
   name: docstringify (deprecated)
-  description: >
+  description: >-
     Flag missing docstrings and, optionally, generate them from signatures
     and type annotations.
   entry: docstringify
