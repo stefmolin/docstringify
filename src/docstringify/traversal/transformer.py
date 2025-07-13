@@ -115,7 +115,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                         itertools.count(start=search_end_line_number, step=-1),
                         node_source_code[::-1],
                     ):
-                        if not line.startswith(expected_indent):
+                        if line and not line.startswith(expected_indent):
                             start_line = line_number
                             break
 
