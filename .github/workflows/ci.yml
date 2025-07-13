@@ -65,5 +65,12 @@ jobs:
       - name: Install dev dependencies
         run: python -m pip install --group dev
 
-      - name: Validate pre-commit hooks
-        run: pre-commit try-repo .
+      - name: Check that the docstringify-edit pre-commit hook is available
+        run: pre-commit try-repo . docstringify-edit
+
+      - name: Check that the docstringify-suggest pre-commit hook is available
+        run: pre-commit try-repo . docstringify-suggest
+
+      # this is the only hook that works without an additional arg so we can test it like this
+      - name: Validate the docstringify-check pre-commit hook
+        run: pre-commit try-repo . docstringify-check --all-files
