@@ -110,7 +110,6 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                         node_source_code = node_source_code[
                             : search_end_line_number - missing_docstring.ast_node.lineno
                         ]
-                        print(search_end_line_number, node_source_code)
 
                     for line_number, line in zip(
                         itertools.count(start=search_end_line_number, step=-1),
