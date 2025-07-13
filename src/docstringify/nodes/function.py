@@ -234,6 +234,7 @@ class FunctionDocstringNode(DocstringNode):
                     zip(self.arguments.args, itertools.repeat(None)),
                 ),
                 positional_defaults,
+                strict=False,
             )
         ]
 
@@ -255,7 +256,7 @@ class FunctionDocstringNode(DocstringNode):
                 default=self._extract_default_values(default, True),
             )
             for arg, default in zip(
-                self.arguments.kwonlyargs, self.arguments.kw_defaults
+                self.arguments.kwonlyargs, self.arguments.kw_defaults, strict=False
             )
         ]
 
