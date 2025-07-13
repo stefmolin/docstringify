@@ -65,5 +65,5 @@ jobs:
       - name: Install dev dependencies
         run: python -m pip install --group dev
 
-      - name: Validate pre-commit hook
-        run: pre-commit try-repo . docstringify
+      - name: Validate pre-commit hooks
+        run: pre-commit try-repo .
