@@ -6,6 +6,7 @@ on the source code.
 from __future__ import annotations
 
 import ast
+import itertools
 from textwrap import indent
 from typing import TYPE_CHECKING
 
@@ -89,11 +90,47 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             # write everything before docstring
             if not isinstance(missing_docstring.ast_node, ast.Module):
                 # line before a code node
-                start_line = missing_docstring.ast_node.body[1].lineno - 1
                 skip_lines = missing_docstring.original_docstring_location
 
+                if skip_lines:
+                    start_line = skip_lines[-1]
+                else:
+                    expected_indent = ' ' * 4
+                    node_source_code = missing_docstring.get_source_segment(
+                        missing_docstring.ast_node
+                    ).splitlines()
+
+                    search_end_line_number = missing_docstring.ast_node.end_lineno
+                    if isinstance(missing_docstring.ast_node, ast.ClassDef):
+                        # restrict the search to between the class definition start
+                        # and the first body item
+                        search_end_line_number = missing_docstring.ast_node.body[
+                            1
+                        ].lineno
+                        node_source_code = node_source_code[
+                            : search_end_line_number - missing_docstring.ast_node.lineno
+                        ]
+                        print(search_end_line_number, node_source_code)
+
+                    for line_number, line in zip(
+                        itertools.count(start=search_end_line_number, step=-1),
+                        node_source_code[::-1],
+                    ):
+                        if not line.startswith(expected_indent):
+                            start_line = line_number
+                            break
+
                 if isinstance(missing_docstring.ast_node, ast.ClassDef):
-                    start_line = docstring_node.lineno
+                    if start_line == missing_docstring.ast_node.body[1].lineno:
+                        # the above logic handles multiline class definitions, but if it
+                        # it is a single line and a method is immediately afterward, we
+                        # need to make sure to not overwrite that
+                        start_line = docstring_node.lineno
+                    elif (
+                        skip_lines is None
+                        and start_line < missing_docstring.ast_node.body[1].lineno
+                    ):
+                        start_line -= 1
 
                 if len(body := missing_docstring.ast_node.body) == 2:
                     code_node = body[1]
@@ -101,8 +138,8 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                     line = source_code[line_number]
 
                     if line.strip() != (function_body := line[code_node.col_offset :]):
-                        # if the function body is on the same line as the signature, cut it out
-                        # in order to inject the docstring in the right spot
+                        # if the function body is on the same line as the signature,
+                        # cut it out in order to inject the docstring in the right spot
                         source_code[line_number] = source_code[line_number][
                             : code_node.col_offset
                         ].rstrip()
@@ -115,7 +152,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                 # need to skip over the empty docstring in the original file
                 output_lines += (
                     source_code[write_line : skip_lines[0] - 1]
-                    + source_code[skip_lines[1] + 1 : start_line]
+                    + source_code[skip_lines[1] : start_line]
                 )
             else:
                 output_lines += source_code[write_line:start_line]
