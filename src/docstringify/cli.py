@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
 
 PROG = __package__
+"""CLI name."""
+
 STYLES: dict[
     str,
     type[GoogleDocstringConverter]
@@ -32,15 +34,24 @@ STYLES: dict[
     'numpydoc': NumpydocDocstringConverter,
     'stub': StubDocstringConverter,
 }
+"""Mapping of docstring style name to the converter class (:mod:`.converters`)."""
+
 CLI_DEFAULTS = {'threshold': 1.0}
+"""CLI default values."""
 
 
 class DocstringifyRunModes(StrEnum):
     """Run modes for Docstringify's CLI."""
 
     CHECK = auto()
+    """Docstringify mode that checks for missing docstrings only."""
+
     EDIT = auto()
+    """Docstringify mode that injects templates for missing docstrings into the
+    source code."""
+
     SUGGEST = auto()
+    """Docstringify mode that suggests templates for missing docstrings."""
 
 
 def _process_files(
