@@ -95,22 +95,17 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                 if skip_lines:
                     start_line = skip_lines[-1]
                 else:
-                    expected_indent = ' ' * 4
+                    # search for the start of the body code (may be comment, blank line,
+                    # an empty docstring, etc.). restrict the search to between the
+                    # class/function definition start and the first body item
+                    search_end_line_number = missing_docstring.ast_node.body[1].lineno
                     node_source_code = missing_docstring.get_source_segment(
                         missing_docstring.ast_node
-                    ).splitlines()
+                    ).splitlines()[
+                        : search_end_line_number - missing_docstring.ast_node.lineno
+                    ]
 
-                    search_end_line_number = missing_docstring.ast_node.end_lineno
-                    if isinstance(missing_docstring.ast_node, ast.ClassDef):
-                        # restrict the search to between the class definition start
-                        # and the first body item
-                        search_end_line_number = missing_docstring.ast_node.body[
-                            1
-                        ].lineno
-                        node_source_code = node_source_code[
-                            : search_end_line_number - missing_docstring.ast_node.lineno
-                        ]
-
+                    expected_indent = ' ' * 4
                     for line_number, line in zip(
                         itertools.count(start=search_end_line_number, step=-1),
                         node_source_code[::-1],
@@ -119,7 +114,6 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                             start_line = line_number
                             break
 
-                if isinstance(missing_docstring.ast_node, ast.ClassDef):
                     if start_line == missing_docstring.ast_node.body[1].lineno:
                         # the above logic handles multiline class definitions, but if it
                         # it is a single line and a method is immediately afterward, we
@@ -144,7 +138,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                         ].rstrip()
 
                         # add the logic under the docstring
-                        start_line = missing_docstring.ast_node.body[1].lineno
+                        start_line = body[1].lineno
                         suffix = function_body
 
             if skip_lines:
