@@ -47,27 +47,6 @@ test = [
   "pytest-randomly>=3.12.0",
 ]
 
-[tool.codespell]
-ignore-regex = 'https://([\w/\.])+'
-
-[tool.numpydoc_validation]
-checks = [
-  "all",  # report on all checks
-  "GL08", # use Docstringify to test for docstring presence instead
-  "ES01", # but don't require an extended summary
-  "EX01", # or examples
-  "SA01", # or a see also section
-  "SS06", # and don't require the summary to fit on one line
-]
-exclude = [ # don't report on checks for these
-  '\.__init__$',
-  '\.__repr__$',
-  '\.__str__$',
-]
-override_SS05 = [ # allow docstrings to start with these words
-  '^Unambiguous ',
-]
-
 [tool.ruff]
 line-length = 88
 format.indent-style = "space"
@@ -103,4 +82,25 @@ lint.ignore = [
 lint.extend-per-file-ignores."tests/*" = [ "ANN" ] # don't require annotations for tests
 lint.isort.known-first-party = [
   "docstringify",
+]
+
+[tool.codespell]
+ignore-regex = 'https://([\w/\.])+'
+
+[tool.numpydoc_validation]
+checks = [
+  "all",  # report on all checks
+  "GL08", # use Docstringify to test for docstring presence instead
+  "ES01", # but don't require an extended summary
+  "EX01", # or examples
+  "SA01", # or a see also section
+  "SS06", # and don't require the summary to fit on one line
+]
+exclude = [ # don't report on checks for these
+  '\.__init__$',
+  '\.__repr__$',
+  '\.__str__$',
+]
+override_SS05 = [ # allow docstrings to start with these words
+  '^Unambiguous ',
 ]
