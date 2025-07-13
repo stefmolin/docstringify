@@ -51,7 +51,8 @@ class DocstringifyRunModes(StrEnum):
     source code."""
 
     SUGGEST = auto()
-    """Docstringify mode that suggests templates for missing docstrings."""
+    """Docstringify mode that suggests templates for missing docstrings without
+    editing the source code."""
 
 
 def _process_files(
