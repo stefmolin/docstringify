@@ -109,6 +109,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
                     for line_number, line in zip(
                         itertools.count(start=search_end_line_number, step=-1),
                         node_source_code[::-1],
+                        strict=False,
                     ):
                         # starting from the end line of the search to the definition
                         # line, the first line without the required indent, will be
