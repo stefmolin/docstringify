@@ -84,6 +84,9 @@ lint.isort.known-first-party = [
   "docstringify",
 ]
 
+[tool.codespell]
+ignore-regex = 'https://([\w/\.])+'
+
 [tool.pytest.ini_options]
 addopts = [
   "-ra",
@@ -102,9 +105,6 @@ xfail_strict = true
 testpaths = [
   "tests",
 ]
-
-[tool.codespell]
-ignore-regex = 'https://([\w/\.])+'
 
 [tool.numpydoc_validation]
 checks = [
