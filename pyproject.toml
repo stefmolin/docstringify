@@ -88,6 +88,7 @@ lint.isort.known-first-party = [
 ignore-regex = 'https://([\w/\.])+'
 
 [tool.pytest.ini_options]
+filterwarnings = [ "error" ]
 addopts = [
   "-ra",
   "-l",
