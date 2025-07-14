@@ -32,10 +32,6 @@ repos:
         name: docstringify source code with numpydoc
         args: [--overwrite, --style=numpydoc]
         files: src/.*
-
-  - repo: https://github.com/stefmolin/docstringify
-    rev: c2f5eda3e4a570e570bc5f9dd1757aa708f7cb79
-    hooks:
       - id: docstringify-edit
         name: docstringify tests with stubs
         args: [--overwrite, --style=stub]
