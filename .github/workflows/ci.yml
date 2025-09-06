@@ -1,4 +1,4 @@
-# This workflow builds docstringify on Mac, Linux, and Windows for
+# This workflow builds Docstringify on Mac, Linux, and Windows for
 # multiple versions of Python to confirm it can be properly installed.
 #
 # Based on https://github.com/stefmolin/data-morph/blob/main/.github/workflows/ci.yml
@@ -66,4 +66,12 @@ jobs:
         run: python -m pip install --group dev
 
       - name: Validate pre-commit hook
-        run: pre-commit try-repo . docstringify
+        run: pre-commit try-repo . docstringify --all-files
+
+      - name: Run tests
+        run: pytest
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3  # v5.3.1
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
