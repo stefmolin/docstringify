@@ -1,5 +1,5 @@
-<div align="center">
-<!--    <img alt="docstringify logo" src="https://github.com/stefmolin/docstringify/raw/main/logo.svg"> -->
+# Docstringify
+Flag missing docstrings and, optionally, generate them from signatures and type annotations.
 
 <table>
    <tr>
@@ -42,13 +42,6 @@
      </td>
    </tr>
   </table>
-
-  <hr>
-</div>
-
-
-# Docstringify
-Flag missing docstrings and, optionally, generate them from signatures and type annotations.
 
 ## About
 
