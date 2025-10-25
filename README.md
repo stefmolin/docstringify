@@ -102,7 +102,7 @@ You can use Docstringify in three modes:
 > [!NOTE]  
 > The examples in this section apply to versions 2.0.0 and greater. If you are using an older version, consult the README at that tag.
 
-#### Check mode
+#### Check mode: `docstringify-check`
 
 Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings before any formatters like `ruff`:
 
@@ -123,7 +123,7 @@ By default, all docstrings are required. If you want to be more lenient, you can
       args: [--threshold=0.75]
 ```
 
-#### Suggest mode
+#### Suggest mode: `docstringify-suggest`
 
 If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), use the `suggest` mode, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for stub suggestions (just single lines of `"""__description__"""`):
 
@@ -135,7 +135,7 @@ If you would like to see suggested docstring templates (inferred from type annot
       args: [--style=numpydoc]
 ```
 
-#### Edit mode
+#### Edit mode: `docstringify-edit`
 
 Use the `edit` mode to create a copy of each file with docstring templates. Here, we ask for changes using the [Google docstring style](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html):
 
@@ -158,7 +158,7 @@ If you want the changes to be made in place, add `--overwrite`. Here, we ask for
 ```
 
 > [!WARNING]
-> Make sure you only operate on files that are in version control with this setting.
+> Make sure you only operate on files that are in version control if you are using `--overwrite`.
 
 Be sure to check out the [pre-commit documentation](https://pre-commit.com/#pre-commit-configyaml---hooks) for additional configuration options.
 
