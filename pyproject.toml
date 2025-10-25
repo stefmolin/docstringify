@@ -20,13 +20,11 @@ license-files = [ "LICENSE" ]
 authors = [
   { name = "Stefanie Molin", email = "docstringify@stefaniemolin.com" },
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -85,6 +83,7 @@ lint.isort.known-first-party = [
 ]
 
 [tool.codespell]
+ignore-words-list = "docstringify"
 ignore-regex = 'https://([\w/\.])+'
 
 [tool.numpydoc_validation]

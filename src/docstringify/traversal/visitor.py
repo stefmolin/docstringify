@@ -195,7 +195,7 @@ class DocstringVisitor(ast.NodeVisitor):
         self.stack.pop()
         return docstring_node.ast_node
 
-    def visit_Module(self, node: ast.Module) -> ast.Module:  # noqa: N802
+    def visit_Module(self, node: ast.Module) -> ast.Module:
         """
         Visit an :class:`ast.Module` node.
 
@@ -211,7 +211,7 @@ class DocstringVisitor(ast.NodeVisitor):
         """
         return self.visit_docstring(node, DocstringNode)
 
-    def visit_ClassDef(self, node: ast.ClassDef) -> ast.ClassDef:  # noqa: N802
+    def visit_ClassDef(self, node: ast.ClassDef) -> ast.ClassDef:
         """
         Visit an :class:`ast.ClassDef` node.
 
@@ -227,7 +227,7 @@ class DocstringVisitor(ast.NodeVisitor):
         """
         return self.visit_docstring(node, DocstringNode)
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.FunctionDef:  # noqa: N802
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.FunctionDef:
         """
         Visit an :class:`ast.FunctionDef` node.
 
@@ -243,7 +243,7 @@ class DocstringVisitor(ast.NodeVisitor):
         """
         return self.visit_docstring(node, FunctionDocstringNode)
 
-    def visit_AsyncFunctionDef(  # noqa: N802
+    def visit_AsyncFunctionDef(
         self, node: ast.AsyncFunctionDef
     ) -> ast.AsyncFunctionDef:
         """
@@ -261,7 +261,7 @@ class DocstringVisitor(ast.NodeVisitor):
         """
         return self.visit_docstring(node, FunctionDocstringNode)
 
-    def visit_Return(self, node: ast.Return) -> ast.Return:  # noqa: N802
+    def visit_Return(self, node: ast.Return) -> ast.Return:
         """
         Visit an :class:`ast.Return` node.
 
