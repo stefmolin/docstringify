@@ -55,11 +55,13 @@ def say_hello(name: str = 'World') -> None:
 You can use Docstringify in three modes:
 
 1. `check`: Flag missing docstrings:
+
     ```
     test is missing a docstring
     test.say_hello is missing a docstring
     ```
 2. `suggest`: Suggest docstring templates based on type annotations:
+
     ```
     test is missing a docstring
     Hint:
@@ -77,6 +79,7 @@ You can use Docstringify in three modes:
     """
     ```
 3. `edit`: Add docstring templates to source code files:
+
     ```python
     """__description__"""
 
