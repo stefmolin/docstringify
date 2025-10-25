@@ -102,6 +102,8 @@ You can use Docstringify in three modes:
 > [!NOTE]  
 > The examples in this section apply to versions 2.0.0 and greater. If you are using an older version, consult the README at that tag.
 
+#### Check mode
+
 Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings before any formatters like `ruff`:
 
 ```yaml
@@ -121,6 +123,8 @@ By default, all docstrings are required. If you want to be more lenient, you can
       args: [--threshold=0.75]
 ```
 
+#### Suggest mode
+
 If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), use the `suggest` mode, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for stub suggestions (just single lines of `"""__description__"""`):
 
 ```yaml
@@ -130,6 +134,8 @@ If you would like to see suggested docstring templates (inferred from type annot
     - id: docstringify-suggest
       args: [--style=numpydoc]
 ```
+
+#### Edit mode
 
 Use the `edit` mode to create a copy of each file with docstring templates. Here, we ask for changes using the [Google docstring style](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html):
 
@@ -141,7 +147,7 @@ Use the `edit` mode to create a copy of each file with docstring templates. Here
       args: [--style=google]
 ```
 
-If you want the changes to be made in place, add `--overwrite` &ndash; make sure you only operate on files that are in version control with this setting. Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
+If you want the changes to be made in place, add `--overwrite`. Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
@@ -150,6 +156,9 @@ If you want the changes to be made in place, add `--overwrite` &ndash; make sure
     - id: docstringify-edit
       args: [--overwrite, --style=numpydoc]
 ```
+
+> [!WARNING]
+> Make sure you only operate on files that are in version control with this setting.
 
 Be sure to check out the [pre-commit documentation](https://pre-commit.com/#pre-commit-configyaml---hooks) for additional configuration options.
 
