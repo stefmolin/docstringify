@@ -10,11 +10,7 @@ from typing import TYPE_CHECKING
 
 from . import __doc__ as pkg_description
 from . import __version__
-from .converters import (
-    GoogleDocstringConverter,
-    NumpydocDocstringConverter,
-    StubDocstringConverter,
-)
+from .converters import CONVERTERS
 from .traversal import DocstringTransformer, DocstringVisitor
 
 if TYPE_CHECKING:
@@ -23,18 +19,6 @@ if TYPE_CHECKING:
 
 PROG = __package__
 """CLI name."""
-
-STYLES: dict[
-    str,
-    type[GoogleDocstringConverter]
-    | type[NumpydocDocstringConverter]
-    | type[StubDocstringConverter],
-] = {
-    'google': GoogleDocstringConverter,
-    'numpydoc': NumpydocDocstringConverter,
-    'stub': StubDocstringConverter,
-}
-"""Mapping of docstring style name to the converter class (:mod:`.converters`)."""
 
 CLI_DEFAULTS = {'threshold': 1.0}
 """CLI default values."""
@@ -77,7 +61,7 @@ def _process_files(
     get_docstring_processor = (
         partial(
             DocstringTransformer,
-            converter=STYLES[args.style],
+            converter=CONVERTERS[args.style],
             overwrite=bool(args.overwrite),
             verbose=args.verbose,
         )
@@ -86,7 +70,7 @@ def _process_files(
             DocstringVisitor,
             converter=None
             if mode == DocstringifyRunModes.CHECK
-            else STYLES[args.style],
+            else CONVERTERS[args.style],
             verbose=args.verbose,
         )
     )
@@ -184,7 +168,7 @@ def _populate_subparser(
             )
         parser.add_argument(
             '--style',
-            choices=STYLES.keys(),
+            choices=CONVERTERS.keys(),
             required=True,
             help='docstring style to use',
         )
