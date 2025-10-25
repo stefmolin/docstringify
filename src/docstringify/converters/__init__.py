@@ -5,7 +5,7 @@ from .google import GoogleDocstringConverter
 from .numpydoc import NumpydocDocstringConverter
 from .stub import StubDocstringConverter
 
-CONVERTERS: dict[
+CONVERTER_LOOKUP: dict[
     str,
     type[GoogleDocstringConverter]
     | type[NumpydocDocstringConverter]
@@ -18,7 +18,7 @@ CONVERTERS: dict[
 """Mapping of docstring style name to the converter class (:mod:`.converters`)."""
 
 __all__ = [
-    'CONVERTERS',
+    'CONVERTER_LOOKUP',
     'DocstringConverter',
     'GoogleDocstringConverter',
     'NumpydocDocstringConverter',

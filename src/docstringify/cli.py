@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 from . import __doc__ as pkg_description
 from . import __version__
-from .converters import CONVERTERS
+from .converters import CONVERTER_LOOKUP
 from .traversal import DocstringTransformer, DocstringVisitor
 
 if TYPE_CHECKING:
@@ -61,7 +61,7 @@ def _process_files(
     get_docstring_processor = (
         partial(
             DocstringTransformer,
-            converter=CONVERTERS[args.style],
+            converter=CONVERTER_LOOKUP[args.style],
             overwrite=bool(args.overwrite),
             verbose=args.verbose,
         )
@@ -70,7 +70,7 @@ def _process_files(
             DocstringVisitor,
             converter=None
             if mode == DocstringifyRunModes.CHECK
-            else CONVERTERS[args.style],
+            else CONVERTER_LOOKUP[args.style],
             verbose=args.verbose,
         )
     )
@@ -168,7 +168,7 @@ def _populate_subparser(
             )
         parser.add_argument(
             '--style',
-            choices=CONVERTERS.keys(),
+            choices=CONVERTER_LOOKUP.keys(),
             required=True,
             help='docstring style to use',
         )
