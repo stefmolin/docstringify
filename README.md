@@ -99,7 +99,7 @@ You can use Docstringify in three modes:
 
 ### Pre-commit hook
 
-> [!NOTE]  
+> [!NOTE]
 > The examples in this section apply to versions 2.0.0 and greater. If you are using an older version, consult the README at that tag.
 
 #### Check mode: `docstringify-check`
