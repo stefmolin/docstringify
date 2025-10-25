@@ -26,7 +26,7 @@ repos:
         exclude: (tests|docs)/.*
 
   - repo: https://github.com/stefmolin/docstringify
-    rev: c2f5eda3e4a570e570bc5f9dd1757aa708f7cb79
+    rev: 1decb1a66b512ab792fdc0d190a7ba761b3d70fd
     hooks:
       - id: docstringify-edit
         name: docstringify source code with numpydoc style
