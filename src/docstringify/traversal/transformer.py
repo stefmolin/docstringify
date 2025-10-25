@@ -6,6 +6,7 @@ on the source code.
 from __future__ import annotations
 
 import ast
+import itertools
 from textwrap import indent
 from typing import TYPE_CHECKING
 
@@ -89,33 +90,69 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             # write everything before docstring
             if not isinstance(missing_docstring.ast_node, ast.Module):
                 # line before a code node
-                start_line = missing_docstring.ast_node.body[1].lineno - 1
                 skip_lines = missing_docstring.original_docstring_location
 
-                if isinstance(missing_docstring.ast_node, ast.ClassDef):
-                    start_line = docstring_node.lineno
+                if skip_lines:
+                    start_line = skip_lines[-1]
+                else:
+                    # search for the start of the body code (may be comment, blank line,
+                    # an empty docstring, etc.). restrict the search to between the
+                    # class/function definition start and the first body item
+                    search_end_line_number = missing_docstring.ast_node.body[1].lineno
+                    node_source_code = missing_docstring.get_source_segment(
+                        missing_docstring.ast_node
+                    ).splitlines()[
+                        : search_end_line_number - missing_docstring.ast_node.lineno
+                    ]
 
+                    expected_indent = ' ' * 4
+                    for line_number, line in zip(
+                        itertools.count(start=search_end_line_number, step=-1),
+                        node_source_code[::-1],
+                        strict=False,
+                    ):
+                        # starting from the end line of the search to the definition
+                        # line, the first, non-empty line without the required indent
+                        # will be the start of the body logic
+                        if line and not line.startswith(expected_indent):
+                            start_line = line_number
+                            break
+
+                    if start_line == missing_docstring.ast_node.body[1].lineno:
+                        # the above logic handles multiline definitions, but if it is
+                        # a single line and code is immediately afterward, we need to
+                        # make sure to not overwrite that
+                        start_line = docstring_node.lineno
+                    elif (
+                        skip_lines is None
+                        and start_line < missing_docstring.ast_node.body[1].lineno
+                    ):
+                        start_line -= 1
+
+                # handle edge case of "single line" definitions like `def test(): ...`
                 if len(body := missing_docstring.ast_node.body) == 2:
                     code_node = body[1]
                     line_number = code_node.lineno - 1
                     line = source_code[line_number]
 
                     if line.strip() != (function_body := line[code_node.col_offset :]):
-                        # if the function body is on the same line as the signature, cut it out
-                        # in order to inject the docstring in the right spot
+                        # if the function body is on the same line as the signature,
+                        # cut it out in order to inject the docstring in the right spot
                         source_code[line_number] = source_code[line_number][
                             : code_node.col_offset
                         ].rstrip()
 
                         # add the logic under the docstring
-                        start_line = missing_docstring.ast_node.body[1].lineno
+                        start_line = body[1].lineno
                         suffix = function_body
 
             if skip_lines:
                 # need to skip over the empty docstring in the original file
+                # note that line numbers are one-based so we have to account for that
+                # in the slicing logic
                 output_lines += (
                     source_code[write_line : skip_lines[0] - 1]
-                    + source_code[skip_lines[1] + 1 : start_line]
+                    + source_code[skip_lines[1] : start_line]
                 )
             else:
                 output_lines += source_code[write_line:start_line]

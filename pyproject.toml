@@ -5,7 +5,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "docstringify"
-version = "1.1.0"
+version = "1.1.1"
 description = "Flag missing docstrings and, optionally, generate them from signatures and type annotations."
 readme = "README.md"
 keywords = [
@@ -83,6 +83,9 @@ lint.extend-per-file-ignores."tests/*" = [ "ANN" ] # don't require annotations f
 lint.isort.known-first-party = [
   "docstringify",
 ]
+
+[tool.codespell]
+ignore-regex = 'https://([\w/\.])+'
 
 [tool.numpydoc_validation]
 checks = [
