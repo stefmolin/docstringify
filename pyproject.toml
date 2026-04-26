@@ -1,6 +1,5 @@
 [build-system]
 build-backend = "hatchling.build"
-
 requires = [ "hatchling" ]
 
 [project]
@@ -28,9 +27,9 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
-
-dependencies = [  ]
+dependencies = []
 urls.Documentation = "https://github.com/stefmolin/docstringify"
 urls.Homepage = "https://github.com/stefmolin/docstringify"
 urls.Source = "https://github.com/stefmolin/docstringify"
@@ -38,7 +37,6 @@ scripts.docstringify = "docstringify.cli:main"
 
 [dependency-groups]
 dev = [ "pre-commit", { include-group = "test" } ]
-
 test = [
   "pytest>=8.3.4",
   "pytest-cov>=4.1.0",
@@ -77,8 +75,7 @@ lint.select = [
 lint.ignore = [
   "E501", # line-too-long
 ]
-
-lint.extend-per-file-ignores."tests/*" = [ "ANN" ] # don't require annotations for tests
+lint.extend-per-file-ignores."tests/*" = [ "ANN" ]  # don't require annotations for tests
 lint.isort.known-first-party = [
   "docstringify",
 ]
@@ -86,7 +83,7 @@ lint.isort.split-on-trailing-comma = false
 
 [tool.codespell]
 ignore-words-list = "docstringify"
-ignore-regex = 'https://([\w/\.])+'
+ignore-regex = "https://([\\w/\\.])+"
 
 [tool.numpydoc_validation]
 checks = [
@@ -97,11 +94,11 @@ checks = [
   "SA01", # or a see also section
   "SS06", # and don't require the summary to fit on one line
 ]
-exclude = [ # don't report on checks for these
-  '\.__init__$',
-  '\.__repr__$',
-  '\.__str__$',
+exclude = [  # don't report on checks for these
+  "\\.__init__$",
+  "\\.__repr__$",
+  "\\.__str__$",
 ]
-override_SS05 = [ # allow docstrings to start with these words
-  '^Unambiguous ',
+override_SS05 = [  # allow docstrings to start with these words
+  "^Unambiguous ",
 ]
