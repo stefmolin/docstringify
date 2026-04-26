@@ -24,13 +24,3 @@
   language: python
   require_serial: true
   types: [python]
-
-- id: docstringify
-  name: docstringify (deprecated)
-  description: >-
-    Flag missing docstrings and, optionally, generate them from signatures
-    and type annotations.
-  entry: docstringify
-  language: python
-  require_serial: true
-  types: [python]
