@@ -49,6 +49,7 @@ test = [
 line-length = 88
 format.indent-style = "space"
 format.quote-style = "single"
+format.skip-magic-trailing-comma = false
 format.docstring-code-format = true
 lint.select = [
   "ANN",  # flake8-annotations
@@ -81,6 +82,7 @@ lint.extend-per-file-ignores."tests/*" = [ "ANN" ] # don't require annotations f
 lint.isort.known-first-party = [
   "docstringify",
 ]
+lint.isort.split-on-trailing-comma = false
 
 [tool.codespell]
 ignore-words-list = "docstringify"
