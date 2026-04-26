@@ -49,8 +49,8 @@ test = [
 line-length = 88
 format.indent-style = "space"
 format.quote-style = "single"
-format.docstring-code-format = true
 format.skip-magic-trailing-comma = false
+format.docstring-code-format = true
 lint.select = [
   "ANN",  # flake8-annotations
   "B",    # flake8-bugbear
