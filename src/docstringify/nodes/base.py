@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import ast
 from functools import partial
-from typing import Callable, overload
+from typing import TYPE_CHECKING, overload
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class DocstringNode:
