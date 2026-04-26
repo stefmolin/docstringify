@@ -54,12 +54,14 @@ def say_hello(name: str = 'World') -> None:
 
 You can use Docstringify in three modes:
 
-1. Flag missing docstrings:
+1. `check` &ndash; Flag missing docstrings:
+
     ```
     test is missing a docstring
     test.say_hello is missing a docstring
     ```
-2. Suggest docstring templates based on type annotations:
+2. `suggest` &ndash; Suggest docstring templates based on type annotations:
+
     ```
     test is missing a docstring
     Hint:
@@ -76,7 +78,8 @@ You can use Docstringify in three modes:
         __description__
     """
     ```
-3. Add docstring templates to source code files:
+3. `edit` &ndash; Add docstring templates to source code files:
+
     ```python
     """__description__"""
 
@@ -96,54 +99,66 @@ You can use Docstringify in three modes:
 
 ### Pre-commit hook
 
+> [!NOTE]
+> The examples in this section apply to versions 2.0.0 and greater. If you are using an older version, consult the README at that tag.
+
+#### Check mode: `docstringify-check`
+
 Add the following to your `.pre-commit-config.yaml` file to block commits with missing docstrings before any formatters like `ruff`:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 1.1.1
+  rev: <version>
   hooks:
-    - id: docstringify
+    - id: docstringify-check
 ```
 
 By default, all docstrings are required. If you want to be more lenient, you can set the threshold, which is the percentage of docstrings that must be present:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 1.1.1
+  rev: <version>
   hooks:
-    - id: docstringify
+    - id: docstringify-check
       args: [--threshold=0.75]
 ```
 
-If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), provide the `--suggest-changes` argument, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for stub suggestions (just single lines of `"""__description__"""`):
+#### Suggest mode: `docstringify-suggest`
+
+If you would like to see suggested docstring templates (inferred from type annotations for functions and methods), use the `suggest` mode, along with the docstring style you want to use (options are `google`, `numpydoc`, and `stub`). Here, we ask for stub suggestions (just single lines of `"""__description__"""`):
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 1.1.1
+  rev: <version>
   hooks:
-    - id: docstringify
-      args: [--suggest-changes=numpydoc]
+    - id: docstringify-suggest
+      args: [--style=stub]
 ```
 
-Use `--make-changes` to create a copy of each file with docstring templates. Here, we ask for changes using the [Google docstring style](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html):
+#### Edit mode: `docstringify-edit`
+
+Use the `edit` mode to create a copy of each file with docstring templates. Here, we ask for changes using the [Google docstring style](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html):
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 1.1.1
+  rev: <version>
   hooks:
-    - id: docstringify
-      args: [--make-changes=google]
+    - id: docstringify-edit
+      args: [--style=google]
 ```
 
-If you want the changes to be made in place, change `--make-changes` to `--make-changes-inplace` &ndash; make sure you only operate on files that are in version control with this setting. Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
+If you want the changes to be made in place, add `--overwrite`. Here, we ask for [numpydoc-style docstring](https://numpydoc.readthedocs.io/en/latest/format.html#) suggestions:
 
 ```yaml
 - repo: https://github.com/stefmolin/docstringify
-  rev: 1.1.1
+  rev: <version>
   hooks:
-    - id: docstringify
-      args: [--make-changes-inplace=numpydoc]
+    - id: docstringify-edit
+      args: [--overwrite, --style=numpydoc]
 ```
+
+> [!WARNING]
+> Make sure you only operate on files that are in version control if you are using `--overwrite`.
 
 Be sure to check out the [pre-commit documentation](https://pre-commit.com/#pre-commit-configyaml---hooks) for additional configuration options.
 
@@ -155,10 +170,10 @@ First, install the `docstringify` package from PyPI:
 $ python -m pip install docstringify
 ```
 
-Then, use the `docstringify` entry point on the file(s) of your choice:
+Then, use the `docstringify` entry point on the file(s) of your choice. For example, to run in `check` mode:
 
 ```shell
-$ docstringify /path/to/file [/path/to/another/file]
+$ docstringify check /path/to/file [/path/to/another/file]
 ```
 
 Run `docstringify --help` for more information.
