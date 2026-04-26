@@ -132,7 +132,7 @@ If you would like to see suggested docstring templates (inferred from type annot
   rev: <version>
   hooks:
     - id: docstringify-suggest
-      args: [--style=numpydoc]
+      args: [--style=stub]
 ```
 
 #### Edit mode: `docstringify-edit`
