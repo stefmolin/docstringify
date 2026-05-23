@@ -74,3 +74,6 @@ jobs:
       # this is the only hook that works without an additional arg so we can test it like this
       - name: Validate the docstringify-check pre-commit hook
         run: pre-commit try-repo . docstringify-check --all-files
+
+      - name: Run tests
+        run: pytest
