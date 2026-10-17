@@ -51,7 +51,7 @@ version.source = "vcs"
 line-length = 88
 format.indent-style = "space"
 format.quote-style = "single"
-format.skip-magic-trailing-comma = false
+format.skip-magic-trailing-comma = true
 format.docstring-code-format = true
 lint.select = [
   "ANN",  # flake8-annotations

@@ -135,7 +135,6 @@ wheels = [
 
 [[package]]
 name = "docstringify"
-version = "2.0.0"
 source = { editable = "." }
 
 [package.dev-dependencies]
