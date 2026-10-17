@@ -141,7 +141,7 @@ class FunctionDocstringNode(DocstringNode):
             return self.get_source_segment(arg.annotation) or PARAMETER_TYPE_PLACEHOLDER
 
     def _extract_default_values(
-        self, default: ast.Constant | None | Literal[NO_DEFAULT], is_keyword_only: bool
+        self, default: ast.Constant | Literal[NO_DEFAULT] | None, is_keyword_only: bool
     ) -> str | Literal[NO_DEFAULT]:
         """
         Extract the argument's default value.
