@@ -164,9 +164,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
             output_lines.append(
                 indent(
                     self.docstring_converter.format_docstring(
-                        docstring.splitlines(),
-                        indent=0,
-                        quote=True,
+                        docstring.splitlines(), indent=0, quote=True
                     )
                     + (f'\n{suffix}' if suffix else ''),
                     ' ' * prefix,
@@ -199,8 +197,7 @@ class DocstringTransformer(ast.NodeTransformer, DocstringVisitor):
         )
 
         suggested_docstring = self.docstring_converter.suggest_docstring(
-            docstring_node,
-            indent=indent,
+            docstring_node, indent=indent
         )
         docstring_ast_node = ast.Expr(ast.Constant(suggested_docstring))
 
