@@ -3,7 +3,4 @@
 from .transformer import DocstringTransformer
 from .visitor import DocstringVisitor
 
-__all__ = [
-    'DocstringTransformer',
-    'DocstringVisitor',
-]
+__all__ = ['DocstringTransformer', 'DocstringVisitor']

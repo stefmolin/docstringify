@@ -28,11 +28,7 @@ class DocstringNode:
 
     @overload
     def __init__(
-        self,
-        node: ast.Module,
-        module_name: str,
-        source_code: str,
-        parent: None = None,
+        self, node: ast.Module, module_name: str, source_code: str, parent: None = None
     ) -> None: ...
 
     @overload

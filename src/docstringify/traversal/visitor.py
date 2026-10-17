@@ -135,30 +135,22 @@ class DocstringVisitor(ast.NodeVisitor):
 
     @overload
     def visit_docstring(
-        self,
-        node: ast.Module,
-        docstring_class: type[DocstringNode],
+        self, node: ast.Module, docstring_class: type[DocstringNode]
     ) -> ast.Module: ...
 
     @overload
     def visit_docstring(
-        self,
-        node: ast.ClassDef,
-        docstring_class: type[DocstringNode],
+        self, node: ast.ClassDef, docstring_class: type[DocstringNode]
     ) -> ast.ClassDef: ...
 
     @overload
     def visit_docstring(
-        self,
-        node: ast.FunctionDef,
-        docstring_class: type[FunctionDocstringNode],
+        self, node: ast.FunctionDef, docstring_class: type[FunctionDocstringNode]
     ) -> ast.FunctionDef: ...
 
     @overload
     def visit_docstring(
-        self,
-        node: ast.AsyncFunctionDef,
-        docstring_class: type[FunctionDocstringNode],
+        self, node: ast.AsyncFunctionDef, docstring_class: type[FunctionDocstringNode]
     ) -> ast.AsyncFunctionDef: ...
 
     def visit_docstring(
